@@ -150,7 +150,7 @@ public class MusicConfiguration {
 	 * The index of the solo organ. Refer to jfuguekeyNote
 	 * manual for the organ indexing.
 	 */
-	private int soloOrgan = 75;
+	private int soloOrgan = 33;
 
 	/**
 	 * Applying the singleton pattern.
