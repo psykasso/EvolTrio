@@ -1,0 +1,62 @@
+<Window title="Hello BXML!" maximized="true"
+	xmlns:bxml="http://pivot.apache.org/bxml" xmlns="org.apache.pivot.wtk"
+	xmlns:content="org.apache.pivot.charts.content" xmlns:charts="org.apache.pivot.charts"
+	>
+	<TabPane styles="{tabOrientation:'vertical'}" xmlns:bxml="http://pivot.apache.org/bxml">
+
+		<charts:LineChartView TabPane.tabData="Category"
+			seriesNameKey="name" title="Category Line Chart Example"
+			horizontalAxisLabel="Categories" verticalAxisLabel="Values"
+			showLegend="false" styles="{threeDimensional:true}">
+			<componentMouseButtonListeners>
+				function mouseClick(component, button, x, y, count) {
+				component.window.showSelectionMessage(component, x, y);
+				}
+        </componentMouseButtonListeners>
+
+			<categories>
+				<charts:ChartView.Category key="a" label="A" />
+				<charts:ChartView.Category key="b" label="B" />
+				<charts:ChartView.Category key="c" label="C" />
+				<charts:ChartView.Category key="d" label="D" />
+				<charts:ChartView.Category key="e" label="E" />
+			</categories>
+
+			<content:CategorySeries name="Example Series 1"
+				a="43.2" b="27.9" c="79.5" d="10.0" e="20.2" />
+			<content:CategorySeries name="Example Series 2"
+				a="27.9" b="43.2" c="79.5" d="19.0" e="31.6" />
+			<content:CategorySeries name="Example Series 3"
+				a="79.5" b="27.9" c="43.2" d="50.3" e="81.9" />
+		</charts:LineChartView>
+
+		<charts:LineChartView TabPane.tabData="XY"
+			seriesNameKey="name" title="XY Line Chart Example"
+			horizontalAxisLabel="X" verticalAxisLabel="Y">
+			<componentMouseButtonListeners>
+				function mouseClick(component, button, x, y, count) {
+				component.window.showSelectionMessage(component, x, y);
+				}
+        </componentMouseButtonListeners>
+
+			<content:ValueSeries name="Example Series 1">
+				<content:Point x="1.0" y="1.0" />
+				<content:Point x="2.0" y="4.0" />
+				<content:Point x="3.0" y="3.0" />
+				<content:Point x="4.0" y="5.0" />
+			</content:ValueSeries>
+			<content:ValueSeries name="Example Series 2">
+				<content:Point x="1.0" y="5.0" />
+				<content:Point x="2.0" y="7.0" />
+				<content:Point x="3.0" y="6.0" />
+				<content:Point x="4.0" y="8.0" />
+			</content:ValueSeries>
+			<content:ValueSeries name="Example Series 3">
+				<content:Point x="3.0" y="4.0" />
+				<content:Point x="4.0" y="3.0" />
+				<content:Point x="5.0" y="2.0" />
+				<content:Point x="6.0" y="3.0" />
+			</content:ValueSeries>
+		</charts:LineChartView>
+	</TabPane>
+</Window>
