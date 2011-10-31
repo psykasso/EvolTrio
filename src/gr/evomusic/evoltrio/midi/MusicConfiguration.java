@@ -115,7 +115,7 @@ public class MusicConfiguration {
 	/**
 	 * The number of notes in a phrase (chromosome).
 	 */
-	private int phraseNotes = 12;
+	private int phraseNotes = 8;
 	
 	/**
 	 * The maximum possible jump for a gene in the
@@ -150,7 +150,7 @@ public class MusicConfiguration {
 	 * The index of the solo organ. Refer to jfuguekeyNote
 	 * manual for the organ indexing.
 	 */
-	private int soloOrgan = 33;
+	private int soloOrgan = 72;
 
 	/**
 	 * Applying the singleton pattern.

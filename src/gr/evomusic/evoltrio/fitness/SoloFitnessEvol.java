@@ -46,8 +46,8 @@ public class SoloFitnessEvol extends FitnessFunction {
 	@Override
 	protected double evaluate(IChromosome chromo) {
 
-		// TODO do smt
-		int evaluation = 500;
+		// TODO change to a different base
+		double evaluation = 10000;
 
 		// update abs genes for each chromosome
 		((MusicChromosome) chromo).updateAbsolute();
