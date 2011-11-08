@@ -14,6 +14,7 @@ import gr.evoltrio.midi.MusicConfiguration;
 import gr.evoltrio.midi.SongBuilder;
 
 import java.io.File;
+import java.util.List;
 
 import org.jgap.FitnessFunction;
 import org.jgap.Gene;
@@ -167,8 +168,10 @@ public class Evolution {
     }
 
     private void updateAbsolutePopulation(Genotype pop) {
-        for (IChromosome mc : pop.getPopulation().getChromosomes())
+        for (IChromosome mc : pop.getPopulation().getChromosomes()){
             ((MusicChromosome) mc).updateAbsolute();
+        }
+            
     }
 
     public void buildAndPlay() {
@@ -201,9 +204,11 @@ public class Evolution {
 
     public static void main(String args[]) throws Exception {
 
+        for(String arg : args)
+            System.out.println(arg);
         Evolution evo = new Evolution(args);
         // CmdLineParser parser = new CmdLineParser(evo);
-
+        
         // if(args.length == 0){
         // System.out.println("Usage: java -jar EvolTrio.jar [ OPTIONS ] FILE");
         // //System.out.println("\nParameters and Options:");
