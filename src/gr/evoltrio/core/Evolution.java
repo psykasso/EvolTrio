@@ -167,6 +167,10 @@ public class Evolution {
         System.out.println();
     }
 
+    /**
+     * Synchronizes the absolute chromosome values for a given population.
+     * @param pop The population to update
+     */
     private void updateAbsolutePopulation(Genotype pop) {
         for (IChromosome mc : pop.getPopulation().getChromosomes()){
             ((MusicChromosome) mc).updateAbsolute();
