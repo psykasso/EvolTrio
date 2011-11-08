@@ -29,10 +29,6 @@ import org.apache.commons.cli.ParseException;
 public class CliParametersParser {
 
 	// TODO put tha somewhere else
-	
-
-	
-
 	private CommandLineParser parser;
 	private Options options;
 	CommandLine line;
@@ -48,9 +44,11 @@ public class CliParametersParser {
 
 		// add options first
 		addOptions();
+		
 		// parse the command line arguments
 		try {
 			line = parser.parse(options, args);
+			parseParameters();
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -484,7 +482,7 @@ public class CliParametersParser {
 	}
 
 	public static void main(String[] args) {
-		new CliParametersParser(new String[] { "--pitch", "--phraseNotes=32" })
+		new CliParametersParser(new String[] { "--h", "--phraseNotes=32" })
 				.getSoloFitness();
 	}
 

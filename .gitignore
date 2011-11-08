@@ -4,3 +4,8 @@ bin
 *.mid
 *.wav
 *.mp3
+/.settings
+/.git
+/.classpath
+/EvolTrio.jar
+/.project
