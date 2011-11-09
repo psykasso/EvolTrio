@@ -39,19 +39,19 @@ public class EvolConfiguration extends Configuration {
 	public static final String[] RANDOMGENERATORS = { "stock", "cauchy",
 			"gaussian" };
 
-	private String randomGen;
-	private String naturalSel;
+	private String randomGen = "stock";
+	private String naturalSel = "best";
 	// TODO change this with allow doublette
-	private boolean executeNaturalBefore;
-	private int minPopSizePercent;
-	private double selectFromPrevGen;
-	private boolean keepPopSizeConstant;
-	private double crossoverRate;
-	private int mutationRate;
+	private boolean executeNaturalBefore = false;
+	private int minPopSizePercent = 0;
+	private double selectFromPrevGen = 1.0d;
+	private boolean keepPopSizeConstant = true;
+	private double crossoverRate = 0.55d;
+	private int mutationRate = 32;
 
 	// TODO iterations are part of EvolConfig ? Move getters and setters down
-	private int iterations;
-	private int popSize;
+	private int iterations = 100;
+	private int popSize = 100;
 
 	/**
 	 * @return the popSize
@@ -81,7 +81,7 @@ public class EvolConfiguration extends Configuration {
 		this.iterations = iterations;
 	}
 
-	// TODO remove this constructor as it's not goind to be used
+	// TODO remove this constructor as it's not going to be used
 	public EvolConfiguration() {
 		this("stock", "Best Chromosome", false, 100, 0.0, true, 35.0, 12, 1000, 30);
 	}
@@ -281,6 +281,24 @@ public class EvolConfiguration extends Configuration {
 							+ "own stock configuration values. This should never happen. "
 							+ "Please report this as a bug to the JGAP team.");
 		}
+	}
+	
+	public String toString() {
+	    String str = "---------------------------------------------------\n" +
+                     "Evolutionary Settings\n" + 
+                     "---------------------------------------------------\n\n" +
+                     "Random Generator : " + randomGen + "\n" + 
+                     "Natural Selector : " + naturalSel + "\n" +
+                     "Execute Natural Selector before GO : " + executeNaturalBefore + "\n" +
+                     "Min Population Size Percent : " + minPopSizePercent + "\n" +
+                     "Select From previous Generation " + selectFromPrevGen + "\n" +
+                     "Keep Population Size Constant : " + keepPopSizeConstant + "\n" +
+                     "Crossover Rate : " + crossoverRate + "\n" +
+                     "Mutation Rate : " +  mutationRate + "\n" +
+                     "Iterations : " + iterations + "\n" +
+                     "Population Size : " + popSize + "\n";
+                     
+	    return str;
 	}
 
 }

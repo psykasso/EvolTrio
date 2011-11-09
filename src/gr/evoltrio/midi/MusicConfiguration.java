@@ -61,9 +61,9 @@ public class MusicConfiguration {
 		durationMap.put("i ", 0.5);
 		durationMap.put("i* ", 0.333333334);
 		
-//		durationMap.put("s. ", 0.375);
-//		durationMap.put("s ", 0.25);
-//		durationMap.put("s* ", 0.166666667);
+		durationMap.put("s. ", 0.375);
+		durationMap.put("s ", 0.25);
+		durationMap.put("s* ", 0.166666667);
 		
 		DURATION_VALUES = Collections.unmodifiableMap(durationMap);
 	}
