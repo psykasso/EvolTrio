@@ -10,6 +10,8 @@
 package gr.evoltrio.conf;
 
 import gr.evoltrio.core.EvolConfiguration;
+import gr.evoltrio.fitness.FiltersFactory;
+import gr.evoltrio.fitness.SoloFitnessEvol;
 import gr.evoltrio.midi.MusicConfiguration;
 
 import java.io.BufferedReader;
@@ -27,17 +29,11 @@ import java.util.Scanner;
  * @since 0.0.1
  */
 public class ConfigurationParser {
-
-    public ConfigurationParser(File file) throws IOException {
-        Properties config = new Properties();
-        InputStream ins = new FileInputStream(file);
-        config.load(ins);
-        System.out.println(config.getProperty("iterations"));
-    }
-    
-    
+ 
     public static void parseConfigurationFile(
-        File configFile, EvolConfiguration evolConf) throws IOException {
+            File configFile, EvolConfiguration evolConf,
+            SoloFitnessEvol fitness) throws IOException {
+        
         Properties config = new Properties();
         InputStream ins = new FileInputStream(configFile);
         config.load(ins);
@@ -68,11 +64,42 @@ public class ConfigurationParser {
         //TODO user the method from the Configuration class
         evolConf.setPopSize(Integer.parseInt(config.getProperty("population")));
         evolConf.setIterations(Integer.parseInt(config.getProperty("iterations")));
+        
+        //parse Solo Fitness Parameters
+        fitness.addFilter((Boolean.parseBoolean(config.getProperty("pitch"))) ? FiltersFactory.Filter.SIMPLEPITCH : null);
+        fitness.addFilter((Boolean.parseBoolean(config.getProperty("duration"))) ? FiltersFactory.Filter.SIMPLEDURATION : null);
+        fitness.addFilter((Boolean.parseBoolean(config.getProperty("scale"))) ? FiltersFactory.Filter.OUTOFSCALE : null);
+        fitness.addFilter((Boolean.parseBoolean(config.getProperty("time"))) ? FiltersFactory.Filter.TIME : null);
+        fitness.addFilter((Boolean.parseBoolean(config.getProperty("dull"))) ? FiltersFactory.Filter.DULL : null);
+        fitness.addFilter((Boolean.parseBoolean(config.getProperty("high"))) ? FiltersFactory.Filter.HIGHANDLOW : null);
+        fitness.addFilter((Boolean.parseBoolean(config.getProperty("repetition1"))) ? FiltersFactory.Filter.ROOTNOTE : null);
+        fitness.addFilter((Boolean.parseBoolean(config.getProperty("repetition2"))) ? FiltersFactory.Filter.THREENOTE : null);
+        fitness.addFilter((Boolean.parseBoolean(config.getProperty("ascending"))) ? FiltersFactory.Filter.ASCENDING : null);
+        fitness.addFilter((Boolean.parseBoolean(config.getProperty("descending"))) ? FiltersFactory.Filter.DESCENDING : null);
+        
+        //add all filters
+        if( Boolean.parseBoolean(config.getProperty("descending")) ) {
+            fitness.addFilter(FiltersFactory.Filter.SIMPLEPITCH);
+            fitness.addFilter(FiltersFactory.Filter.SIMPLEDURATION);
+            fitness.addFilter(FiltersFactory.Filter.OUTOFSCALE);
+            fitness.addFilter(FiltersFactory.Filter.TIME);
+            fitness.addFilter(FiltersFactory.Filter.DULL);
+            fitness.addFilter(FiltersFactory.Filter.HIGHANDLOW);
+            fitness.addFilter(FiltersFactory.Filter.ROOTNOTE);
+            fitness.addFilter(FiltersFactory.Filter.THREENOTE);
+            fitness.addFilter(FiltersFactory.Filter.ASCENDING);
+            fitness.addFilter(FiltersFactory.Filter.DESCENDING);
+        }
+        
+        System.out.println(MusicConfiguration.getInstance());
+        System.out.println(evolConf);
+        System.out.println(fitness);
     }
 
     public static void main(String[] args) throws IOException {
         File conf = new File("conf/default.conf");
-        ConfigurationParser.parseConfigurationFile(conf, new EvolConfiguration());
+        ConfigurationParser.parseConfigurationFile(conf,
+                new EvolConfiguration(), new SoloFitnessEvol());
 
     }
 }

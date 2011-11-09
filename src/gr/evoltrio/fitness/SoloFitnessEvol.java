@@ -66,7 +66,19 @@ public class SoloFitnessEvol extends FitnessFunction {
 	}
 
 	public void addFilter(FiltersFactory.Filter filter) {
-		filters.put(filter, FiltersFactory.getFilter(filter));
+	    if (filter != null)
+	        filters.put(filter, FiltersFactory.getFilter(filter));
+	}
+	
+	public String toString() {
+	    String str = "---------------------------------------------------\n" +
+	                 " Fitness Filters                                   \n" +
+	                 "---------------------------------------------------\n\n";
+	    for(IFitnessFilter filter : filters.values()) {
+	        str += filter.getClass().getName() + "\n";
+	    }
+	    
+	    return str;
 	}
 
 }
