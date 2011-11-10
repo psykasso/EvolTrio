@@ -51,6 +51,7 @@ public class Evolution {
         soloFitness = parser.getSoloFitness();
         parser.getMusicConfig();
         musicConf = MusicConfiguration.getInstance();
+        setup();
     }
 
     public Evolution(String args[]) {
@@ -165,6 +166,21 @@ public class Evolution {
 
         }
         System.out.println();
+    }
+    
+    public void setupOnce() {
+        setup();
+        try {
+            population = Genotype.randomInitialGenotype(evolConf);
+        } catch (InvalidConfigurationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    
+    public double evolveOnce() {
+        population.evolve();
+        return population.getFittestChromosome().getFitnessValue();
     }
 
     /**

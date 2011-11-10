@@ -5,5 +5,12 @@
 	<classpathentry kind="lib" path="lib/commons-cli-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/jfugue-4.0.3.jar"/>
 	<classpathentry kind="lib" path="lib/jgap.jar"/>
+	<classpathentry kind="lib" path="lib/jcommon-1.0.16.jar"/>
+	<classpathentry kind="lib" path="lib/jfreechart-1.0.13.jar"/>
+	<classpathentry kind="lib" path="lib/pivot-charts-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/pivot-core-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/pivot-jfree-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/pivot-wtk-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/pivot-wtk-terra-2.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

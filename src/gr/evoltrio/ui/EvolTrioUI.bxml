@@ -1,0 +1,146 @@
+<Window title="EvolTrio" maximized="true"
+	xmlns:bxml="http://pivot.apache.org/bxml" xmlns:content="org.apache.pivot.wtk.content"
+	xmlns:chartcontent="org.apache.pivot.charts.content" xmlns:charts="org.apache.pivot.charts"
+	xmlns="org.apache.pivot.wtk">
+	<Border>
+		<TablePane bxml:id="tablePane"
+			styles="{verticalSpacing:1, showHorizontalGridLines:true,
+            horizontalSpacing:1, showVerticalGridLines:true}">
+
+			<columns>
+				<TablePane.Column width="1*" />
+			</columns>
+
+			<TablePane.Row height="1*">
+				<SplitPane bxml:id="splitPane" orientation="horizontal"
+					splitRatio="0.6">
+					<left>
+						<Border styles="{padding:6}">
+							<charts:LineChartView bxml:id="evolutionLineChartView"
+								TabPane.tabData="XY" seriesNameKey="name" title="Fitness Evaluation"
+								horizontalAxisLabel="Iteration" verticalAxisLabel="Fitness Value"
+								showLegend="true" styles="{threeDimensional:false}">
+
+							</charts:LineChartView>
+							<!-- <ActivityIndicator bxml:id="evolutionIndicator" -->
+							<!-- styles="{color:16}" preferredWidth="96" preferredHeight="96" 
+								/> -->
+						</Border>
+					</left>
+					<right>
+
+						<BoxPane orientation="vertical" styles="{padding:6, spacing:8, fill:'true'}">
+							<Border title="Music" styles="{padding:2}">
+								<BoxPane orientation="vertical"
+									styles="{padding:4, spacing:10, fill:true}">
+
+									<BoxPane orientation="horizontal" styles="{fill:'true'}">
+										<Label text="Rest Offset" preferredWidth="100" />
+										<Slider bxml:id="restOffsetSlider" preferredWidth="200"
+											range="{start:0, end:24}" value="0" />
+										<Label bxml:id="restOffsetLabel" text="0"
+											width="10" />
+									</BoxPane>
+
+									<BoxPane orientation="horizontal" styles="{fill:'true'}">
+										<Label text="Phrase Notes" preferredWidth="100" />
+										<Slider bxml:id="phraseNotesSlider" preferredWidth="200"
+											range="{start:4, end:32}" value="8" />
+										<Label bxml:id="phraseNotesLabel" text="8"
+											width="10" />
+									</BoxPane>
+
+									<BoxPane orientation="horizontal" styles="{fill:'true'}">
+										<Label text="Int Jump" preferredWidth="100" />
+										<Slider bxml:id="intJumpSlider" preferredWidth="200"
+											range="{start:1, end:12}" value="5" />
+										<Label bxml:id="intJumpLabel" text="5" width="10" />
+									</BoxPane>
+
+									<BoxPane orientation="horizontal" styles="{fill:'true'}">
+										<Label text="Octave" preferredWidth="100" />
+										<Slider bxml:id="octaveSlider" preferredWidth="200"
+											range="{start:1, end:11}" value="5" />
+										<Label bxml:id="octaveLabel" text="5" width="10" />
+									</BoxPane>
+
+									<BoxPane orientation="horizontal" styles="{fill:'true'}">
+										<Label text="Dur Jump" preferredWidth="100" />
+										<Slider bxml:id="durJumpSlider" preferredWidth="200"
+											range="{start:1, end:6}" value="1" />
+										<Label bxml:id="durJumpLabel" text="1" width="10" />
+									</BoxPane>
+
+									<BoxPane orientation="horizontal" styles="{fill:'true'}">
+										<Label text="Beg Dur" preferredWidth="100" />
+										<ListButton bxml:id="begDurListButton" preferredWidth="150"
+											listData="['IMG_0725_2.jpg', 'IMG_0735_2.jpg', 'IMG_0767_2.jpg']" />
+									</BoxPane>
+
+									<BoxPane orientation="horizontal" styles="{fill:'true'}">
+										<Label text="Key Note" preferredWidth="100" />
+										<ListButton bxml:id="keyNoteListButton" preferredWidth="150" listData="['C', 'C#', 'D']" />
+									</BoxPane>
+
+									<BoxPane orientation="horizontal" styles="{fill:'true'}">
+										<Label text="Tempo" preferredWidth="100" />
+										<ListButton bxml:id="tempoListButton" preferredWidth="150"
+											listData="['Adagio', 'Allegreto', 'Vivace']" />
+									</BoxPane>
+									
+									<BoxPane orientation="horizontal" styles="{fill:'true'}">
+										<Label text="Organ" preferredWidth="100" />
+										<ListButton bxml:id="organListButton" preferredWidth="150"
+											listData="['Voice Ohs', 'Violin', 'Guitar']" />
+									</BoxPane>
+
+								</BoxPane>
+							</Border>
+
+							<Border title="Evolutionary" styles="{padding:2}">
+								<BoxPane orientation="vertical"
+									styles="{padding:4, spacing:10, fill:true}">
+
+									<BoxPane orientation="horizontal" styles="{fill:'true'}">
+										<Label text="Crossover" preferredWidth="100" />
+										<Slider bxml:id="crossoverSlider" preferredWidth="200" range="{start:0, end:100}"
+											value="10" />
+										<Label bxml:id="crossoverLabel" text="10%" width="10" />
+									</BoxPane>
+
+									<BoxPane orientation="horizontal" styles="{fill:'true'}">
+										<Label text="Mutations" preferredWidth="100" />
+										<Slider bxml:id="mutationSlider" preferredWidth="200" range="{start:0, end:100}"
+											value="12" />
+										<Label bxml:id="mutationLabel" width="10" text="12%" />
+									</BoxPane>
+
+									<BoxPane orientation="horizontal" styles="{fill:'true'}">
+										<Label text="Pop Size" preferredWidth="100" />
+										<Slider bxml:id="popSizeSlider" range="{start:4, end:1000}" preferredWidth="200"
+											value="100" />
+										<Label bxml:id="popSizeLabel" text="100" width="10" />
+									</BoxPane>
+
+								</BoxPane>
+							</Border>
+						</BoxPane>
+					</right>
+				</SplitPane>
+			</TablePane.Row>
+
+			<TablePane.Row height="50">
+				<BoxPane
+					styles="{horizontalAlignment:'center', verticalAlignment:'center'}">
+					<Label text="Progress:" />
+					<Meter bxml:id="evolutionMeter" preferredWidth="500"
+						preferredHeight="50" />
+					<PushButton bxml:id="resetButton" buttonData="Reset" />
+					<PushButton bxml:id="evolveButton" buttonData="Evolve" />
+					<PushButton bxml:id="playButton" buttonData="Play" />
+				</BoxPane>
+			</TablePane.Row>
+
+		</TablePane>
+	</Border>
+</Window>

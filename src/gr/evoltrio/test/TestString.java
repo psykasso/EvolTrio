@@ -22,8 +22,12 @@ public class TestString {
 		String b = a;
 		b += "x";
 		
-		System.out.println(a);
-		System.out.println(b);
+//		System.out.println(a);
+//		System.out.println(b);
 		
+		double x = -1000;
+		//double z = Math.pow((1d + ( 1d / x)),x);
+		double z = Math.pow(Math.E,(1d + (x/(1-x))));
+		System.out.println(z);
 	}
 }

@@ -78,7 +78,7 @@ public class ConfigurationParser {
         fitness.addFilter((Boolean.parseBoolean(config.getProperty("descending"))) ? FiltersFactory.Filter.DESCENDING : null);
         
         //add all filters
-        if( Boolean.parseBoolean(config.getProperty("descending")) ) {
+        if( Boolean.parseBoolean(config.getProperty("filtAll")) ) {
             fitness.addFilter(FiltersFactory.Filter.SIMPLEPITCH);
             fitness.addFilter(FiltersFactory.Filter.SIMPLEDURATION);
             fitness.addFilter(FiltersFactory.Filter.OUTOFSCALE);
