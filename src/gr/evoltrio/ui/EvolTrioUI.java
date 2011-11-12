@@ -16,31 +16,40 @@
  */
 package gr.evoltrio.ui;
 
-import org.apache.pivot.beans.BXMLSerializer;
+import gr.evoltrio.exception.InvalidConfigurationException;
+import gr.evoltrio.midi.MusicConfiguration;
+import gr.evoltrio.test.ui.SleepTask;
+
+import java.net.URL;
+
+import org.apache.pivot.beans.Bindable;
 import org.apache.pivot.charts.LineChartView;
 import org.apache.pivot.charts.content.Point;
 import org.apache.pivot.charts.content.ValueSeries;
-import org.apache.pivot.collections.List;
 import org.apache.pivot.collections.ArrayList;
+import org.apache.pivot.collections.List;
 import org.apache.pivot.collections.Map;
+import org.apache.pivot.collections.concurrent.SynchronizedList;
+import org.apache.pivot.util.Resources;
+import org.apache.pivot.util.concurrent.Task;
+import org.apache.pivot.util.concurrent.TaskListener;
 import org.apache.pivot.wtk.ActivityIndicator;
-import org.apache.pivot.wtk.Application;
-import org.apache.pivot.wtk.BoxPane;
 import org.apache.pivot.wtk.Button;
 import org.apache.pivot.wtk.ButtonPressListener;
 import org.apache.pivot.wtk.Component;
-import org.apache.pivot.wtk.Display;
 import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.ListButton;
 import org.apache.pivot.wtk.Meter;
 import org.apache.pivot.wtk.PushButton;
 import org.apache.pivot.wtk.Slider;
 import org.apache.pivot.wtk.SliderValueListener;
-import org.apache.pivot.wtk.TabPane;
+import org.apache.pivot.wtk.TaskAdapter;
 import org.apache.pivot.wtk.Window;
+import org.apache.pivot.wtk.media.Image;
 
-public class EvolTrioUI implements Application {
-    private Window window = null;
+public class EvolTrioUI extends Window implements Bindable {
+
+    private ArrayList<Component> activeComponents;
 
     // Music Panel
     private Slider restOffsetSlider = null;
@@ -73,86 +82,115 @@ public class EvolTrioUI implements Application {
     private Slider popSizeSlider = null;
     private Label popSizeLabel = null;
 
+    // Info Panel
+    private Label iterationLabel = null;
+    private Label fitnessLabel = null;
+    private Label bestChromosomeLabel = null;
+
     private Meter evolutionMeter = null;
     private ActivityIndicator evolutionIndicator = null;
 
     // Buttons
     private PushButton resetButton;
     private PushButton evolveButton;
+    private PushButton toggleEvolutionButton;
     private PushButton playButton;
+    private PushButton saveButton;
 
     // Fitness chart
     private LineChartView evolutionChart = null;
-    
+
     // private ValueSeries<Point> fitnessData = new ValueSeries<Point>();
 
     private int cnt = 0;
     List<ValueSeries<Point>> data;
 
-    private EvolTrioUI evolTrioUI;
-    EvolutionRunner evolRunner;
-    Thread evolThread;
+    // EvolutionRunner evolRunner;
+    private EvolutionTask evolutionTask;
+
+    private ActivityIndicator activityIndicator = null;
 
     @Override
-    public void startup(Display display, Map<String, String> properties)
-            throws Exception {
-        evolTrioUI = this;
+    public void initialize(Map<String, Object> namespace, URL location,
+            Resources resources) {
 
-        BXMLSerializer bxmlSerializer = new BXMLSerializer();
-        window = (Window) bxmlSerializer.readObject(EvolTrioUI.class,
-                "EvolTrioUI.bxml");
-        window.open(display);
+        activeComponents = new ArrayList<Component>();
 
+        evolutionChart = (LineChartView) namespace
+                .get("evolutionLineChartView");
+        // evolutionChart.set
+        evolutionChart.setHeightLimits(100, 100);
+        evolutionChart.setHeight(10000);
+        evolutionChart.repaint(true);
+        evolutionChart.setVisible(true);
+
+        // evolRunner = new EvolutionRunner(evolTrioUI, evolutionChart, new
+        // String[]{"-1"});
+        evolutionTask = new EvolutionTask(this, evolutionChart,
+                new String[] { "-1" });
+
+        // BXMLSerializer bxmlSerializer = new BXMLSerializer();
+        // namespace.get
         // -----------------
         // Music Items Panel
         // -----------------
-        restOffsetSlider = (Slider) bxmlSerializer.getNamespace().get(
-                "restOffsetSlider");
-        restOffsetLabel = (Label) bxmlSerializer.getNamespace().get(
-                "restOffsetLabel");
+        restOffsetSlider = (Slider) namespace.get("restOffsetSlider");
+        activeComponents.add(restOffsetSlider);
+        restOffsetLabel = (Label) namespace.get("restOffsetLabel");
 
-        phraseNotesSlider = (Slider) bxmlSerializer.getNamespace().get(
-                "phraseNotesSlider");
-        phraseNotesLabel = (Label) bxmlSerializer.getNamespace().get(
-                "phraseNotesLabel");
+        phraseNotesSlider = (Slider) namespace.get("phraseNotesSlider");
+        activeComponents.add(phraseNotesSlider);
+        phraseNotesLabel = (Label) namespace.get("phraseNotesLabel");
 
-        intJumpSlider = (Slider) bxmlSerializer.getNamespace().get(
-                "intJumpSlider");
-        intJumpLabel = (Label) bxmlSerializer.getNamespace()
-                .get("intJumpLabel");
+        intJumpSlider = (Slider) namespace.get("intJumpSlider");
+        activeComponents.add(intJumpSlider);
+        intJumpLabel = (Label) namespace.get("intJumpLabel");
 
-        durJumpSlider = (Slider) bxmlSerializer.getNamespace().get(
-                "durJumpSlider");
-        durJumpLabel = (Label) bxmlSerializer.getNamespace()
-                .get("durJumpLabel");
+        durJumpSlider = (Slider) namespace.get("durJumpSlider");
+        activeComponents.add(durJumpSlider);
+        durJumpLabel = (Label) namespace.get("durJumpLabel");
 
-        octaveSlider = (Slider) bxmlSerializer.getNamespace().get(
-                "octaveSlider");
-        octaveLabel = (Label) bxmlSerializer.getNamespace().get("octaveLabel");
+        octaveSlider = (Slider) namespace.get("octaveSlider");
+        activeComponents.add(octaveSlider);
+        octaveLabel = (Label) namespace.get("octaveLabel");
 
-        begDurListButton = (ListButton) bxmlSerializer.getNamespace().get(
-                "begDurListButton");
-        keyNoteListButton = (ListButton) bxmlSerializer.getNamespace().get(
-                "keyNoteListButton");
-        tempoListButton = (ListButton) bxmlSerializer.getNamespace().get(
-                "tempoButton");
-        organListButton = (ListButton) bxmlSerializer.getNamespace().get(
-                "organButton");
+        begDurListButton = (ListButton) namespace.get("begDurListButton");
+        activeComponents.add(begDurListButton);
+        keyNoteListButton = (ListButton) namespace.get("keyNoteListButton");
+        activeComponents.add(keyNoteListButton);
+        tempoListButton = (ListButton) namespace.get("tempoListButton");
+        activeComponents.add(tempoListButton);
+        organListButton = (ListButton) namespace.get("organListButton");
+        activeComponents.add(organListButton);
 
-        crossoverSlider = (Slider) bxmlSerializer.getNamespace().get(
-                "crossoverSlider");
-        crossoverLabel = (Label) bxmlSerializer.getNamespace().get(
-                "crossoverLabel");
+        crossoverSlider = (Slider) namespace.get("crossoverSlider");
+        activeComponents.add(crossoverSlider);
+        crossoverLabel = (Label) namespace.get("crossoverLabel");
 
-        mutationSlider = (Slider) bxmlSerializer.getNamespace().get(
-                "mutationSlider");
-        mutationLabel = (Label) bxmlSerializer.getNamespace().get(
-                "mutationLabel");
+        mutationSlider = (Slider) namespace.get("mutationSlider");
+        activeComponents.add(mutationSlider);
+        mutationLabel = (Label) namespace.get("mutationLabel");
 
-        popSizeSlider = (Slider) bxmlSerializer.getNamespace().get(
-                "popSizeSlider");
-        popSizeLabel = (Label) bxmlSerializer.getNamespace()
-                .get("popSizeLabel");
+        popSizeSlider = (Slider) namespace.get("popSizeSlider");
+        activeComponents.add(popSizeSlider);
+        popSizeLabel = (Label) namespace.get("popSizeLabel");
+
+        iterationLabel = (Label) namespace.get("iterationLabel");
+        fitnessLabel = (Label) namespace.get("fitnessLabel");
+        bestChromosomeLabel = (Label) namespace.get("bestChromosomeLabel");
+
+        activityIndicator = (ActivityIndicator) namespace
+                .get("activityIndicator");
+
+        // iterationLabel.getLabelListeners().add(
+        // new LabelListener() {
+        //
+        // @Override
+        // public void textChanged(Label label, String previousText) {
+        // label.setText(previousText);
+        // System.out.println(previousText);
+        // }
+        // });
 
         // Music Panel Listeners
         restOffsetSlider.getSliderValueListeners().add(
@@ -230,59 +268,89 @@ public class EvolTrioUI implements Application {
             }
         });
 
-        resetButton = (PushButton) bxmlSerializer.getNamespace().get(
-                "resetButton");
-        evolveButton = (PushButton) bxmlSerializer.getNamespace().get(
-                "evolveButton");
-        playButton = (PushButton) bxmlSerializer.getNamespace().get(
-                "playButton");
+        resetButton = (PushButton) namespace.get("resetButton");
+        resetButton.setEnabled(false);
+        evolveButton = (PushButton) namespace.get("evolveButton");
+        toggleEvolutionButton = (PushButton) namespace
+                .get("toggleEvolutionButton");
+        toggleEvolutionButton.setVisible(false);
+        playButton = (PushButton) namespace.get("playButton");
+        playButton.setEnabled(false);
+        saveButton = (PushButton) namespace.get("saveButton");
+        saveButton.setEnabled(false);
 
         resetButton.getButtonPressListeners().add(new ButtonPressListener() {
 
             @Override
             public void buttonPressed(Button button) {
-                // evolutionBoxPane.setEnabled(false);
-
-                // evolRunner.resetEvolConf();
-                evolRunner.setEvolutionRunning(false);
-                evolveButton.setEnabled(true);
-
+                enableComponents();
             }
         });
 
         evolveButton.getButtonPressListeners().add(new ButtonPressListener() {
+            @Override
+            public void buttonPressed(Button button) {
+                activityIndicator.setActive(true);
+                // setEnabled(false);
+
+                System.out.println("Starting evolution.");
+
+                TaskListener<String> taskListener = new TaskListener<String>() {
+                    @Override
+                    public void taskExecuted(Task<String> task) {
+                        // activityIndicator.setActive(false);
+                        setEnabled(true);
+
+                        System.out
+                                .println("Synchronous task execution complete: \""
+                                        + task.getResult() + "\"");
+                    }
+
+                    @Override
+                    public void executeFailed(Task<String> task) {
+                        // activityIndicator.setActive(false);
+                        setEnabled(true);
+
+                        //System.err.println(task.getFault());
+                    }
+                };
+
+                evolutionTask.setupEvolutionTask();
+                evolutionTask.start();
+                // Image pauseImg = new Image();
+                // evolveButton.setButtonData();
+                evolutionTask.execute(new TaskAdapter<String>(taskListener));
+
+                evolveButton.setVisible(false);
+                toggleEvolutionButton.setVisible(true);
+                disableComponents();
+            }
+        });
+        
+        toggleEvolutionButton.getButtonPressListeners().add(new ButtonPressListener() {
 
             @Override
             public void buttonPressed(Button button) {
-                button.setEnabled(false);
-
-                // TODO Auto-generated method stub
-
-                //evolutionChart.setVisible(false);
-                // evolutionIndicator.setActive(!evolutionIndicator.isActive());
-                // evolRunner.setup();
-                evolThread.start();
+                if(evolutionTask.getState() == EvolutionTask.RUNNING) {
+                    evolutionTask.setState(evolutionTask.PAUSED);
+                    activityIndicator.setEnabled(false);
+                }
+                else if(evolutionTask.getState() == EvolutionTask.PAUSED) {
+                    evolutionTask.setState(evolutionTask.RUNNING);
+                    activityIndicator.setEnabled(true);
+                }
             }
         });
 
-        evolutionChart = (LineChartView) bxmlSerializer.getNamespace().get(
-                "evolutionLineChartView");
-        
-        evolRunner = new EvolutionRunner(evolTrioUI, evolutionChart, new String[]{"-1"});
-        evolThread = new Thread(evolRunner);
+        playButton.getButtonPressListeners().add(new ButtonPressListener() {
 
-        // evolutionIndicator = (ActivityIndicator)
-        // bxmlSerializer.getNamespace().get(
-        // "evolutionIndicator");
-
-        evolutionMeter = (Meter) bxmlSerializer.getNamespace().get(
-                "evolutionMeter");
+            @Override
+            public void buttonPressed(Button button) {
+                activityIndicator.setEnabled(false);
+            }
+        });
 
     } // end of startup
-
-    public Window getWindow() {
-        return window;
-    }
 
     /**
      * @return the evolutionMeter
@@ -302,40 +370,65 @@ public class EvolTrioUI implements Application {
         return evolutionChart;
     }
 
+    public synchronized Label getIterationLabel() {
+        return iterationLabel;
+    }
+
+    public Label getFitnessLabel() {
+        return fitnessLabel;
+    }
+
+    public Label getBestChromosomeLabel() {
+        return bestChromosomeLabel;
+    }
+
     // Updater functions for the slider listeners
     private void updateRestOffset() {
         restOffsetLabel.setText(Integer.toString(restOffsetSlider.getValue()));
+        MusicConfiguration.getInstance().setRestOffset(
+                restOffsetSlider.getValue());
     }
 
     private void updatePhraseNotes() {
-        phraseNotesLabel
-                .setText(Integer.toString(phraseNotesSlider.getValue()));
+        phraseNotesLabel.setText("" + phraseNotesSlider.getValue());
+        MusicConfiguration.getInstance().setPhraseNotes(
+                phraseNotesSlider.getValue());
     }
 
     private void updateIntJump() {
-        intJumpLabel.setText(Integer.toString(intJumpSlider.getValue()));
+        intJumpLabel.setText("" + intJumpSlider.getValue());
+        MusicConfiguration.getInstance().setMaxIntervalJump(
+                phraseNotesSlider.getValue());
     }
 
     private void updateDurJump() {
-        durJumpLabel.setText(Integer.toString(durJumpSlider.getValue()));
+        durJumpLabel.setText("" + durJumpSlider.getValue());
+        MusicConfiguration.getInstance().setMaxDurationJump(
+                phraseNotesSlider.getValue());
     }
 
     private void updateOctave() {
         octaveLabel.setText(Integer.toString(octaveSlider.getValue()));
+        MusicConfiguration.getInstance()
+                .setOctave(phraseNotesSlider.getValue());
     }
 
     private void updateCrossover() {
-        crossoverLabel.setText(Integer.toString(crossoverSlider.getValue())
-                + "%");
+        crossoverLabel.setText("" + crossoverSlider.getValue() + "%");
+        evolutionTask.getEvolution().getEvolConf()
+                .setCrossoverRate((double) crossoverSlider.getValue() / 100d);
     }
 
     private void updateMutation() {
-        mutationLabel
-                .setText(Integer.toString(mutationSlider.getValue()) + "%");
+        mutationLabel.setText("" + mutationSlider.getValue() + "%");
+        evolutionTask.getEvolution().getEvolConf()
+                .setMutationRate(mutationSlider.getValue());
     }
 
     private void updatePopSize() {
-        popSizeLabel.setText(Integer.toString(popSizeSlider.getValue()));
+        popSizeLabel.setText("" + popSizeSlider.getValue());
+        evolutionTask.getEvolution().getEvolConf()
+                .setPopSize(popSizeSlider.getValue());
     }
 
     private void updateIterations() {
@@ -354,20 +447,18 @@ public class EvolTrioUI implements Application {
         }
     }
 
-    @Override
-    public boolean shutdown(boolean optional) {
-        if (window != null) {
-            window.close();
+    public void disableComponents() {
+        for (Component comp : activeComponents) {
+            comp.setEnabled(false);
         }
-
-        return false;
     }
 
-    @Override
-    public void suspend() {
-    }
-
-    @Override
-    public void resume() {
+    public void enableComponents() {
+        for (Component comp : activeComponents) {
+            if (comp != null)
+                comp.setEnabled(true);
+            else
+                System.out.println(comp);
+        }
     }
 }

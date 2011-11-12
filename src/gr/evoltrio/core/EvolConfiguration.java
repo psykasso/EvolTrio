@@ -32,6 +32,8 @@ import org.jgap.impl.WeightedRouletteSelector;
  * @since 0.0.1
  */
 public class EvolConfiguration extends Configuration {
+    
+    public static final int DEFAULT_POP_SIZE = 100;
 
 	public static final String[] NATURALSELECTORS = { "best", "threshold",
 			"tournament", "weighted" };
@@ -51,20 +53,19 @@ public class EvolConfiguration extends Configuration {
 
 	// TODO iterations are part of EvolConfig ? Move getters and setters down
 	private int iterations = 100;
-	private int popSize = 100;
+
 
 	/**
-	 * @return the popSize
-	 */
-	public int getPopSize() {
-		return popSize;
-	}
-
-	/**
+	 * TODO this wrapper handles errors
 	 * @param popSize the popSize to set
 	 */
 	public void setPopSize(int popSize) {
-		this.popSize = popSize;
+		try {
+            setPopulationSize(popSize);
+        } catch (InvalidConfigurationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 	}
 
 	/**
@@ -83,13 +84,13 @@ public class EvolConfiguration extends Configuration {
 
 	// TODO remove this constructor as it's not going to be used
 	public EvolConfiguration() {
-		this("stock", "Best Chromosome", false, 100, 0.0, true, 35.0, 12, 1000, 30);
+		this("stock", "Best Chromosome", false, 100, 0.0, true, 35.0, 12, 1000);
 	}
 
 	public EvolConfiguration(String randomGen, String naturalSel,
 			boolean executeNaturalBefore, int minPopSizePercent,
 			double selectFromPrevGen, boolean keepPopSizeConstant,
-			double crossoverRate, int mutationRate, int iterations, int popSize) {
+			double crossoverRate, int mutationRate, int iterations) {
 
 		// calling the default constructor
 		super("", "");
@@ -105,7 +106,6 @@ public class EvolConfiguration extends Configuration {
 		this.mutationRate = mutationRate;
 
 		this.iterations = iterations;
-		this.popSize = popSize;
 
 		setTheConfiguration();
 	}
@@ -267,7 +267,7 @@ public class EvolConfiguration extends Configuration {
 			setMinimumPopSizePercent(minPopSizePercent);
 			setSelectFromPrevGen(selectFromPrevGen);
 			setKeepPopulationSizeConstant(keepPopSizeConstant);
-			setPopulationSize(popSize);
+			setPopulationSize(DEFAULT_POP_SIZE);
 
 			if (crossoverRate != 0)
 				addGeneticOperator(new CrossoverOperator(this, crossoverRate));
@@ -296,7 +296,7 @@ public class EvolConfiguration extends Configuration {
                      "Crossover Rate : " + crossoverRate + "\n" +
                      "Mutation Rate : " +  mutationRate + "\n" +
                      "Iterations : " + iterations + "\n" +
-                     "Population Size : " + popSize + "\n";
+                     "Population Size : " + getPopulationSize() + "\n";
                      
 	    return str;
 	}

@@ -10,6 +10,7 @@
 package gr.evoltrio.core;
 
 import gr.evoltrio.conf.CliParametersParser;
+import gr.evoltrio.fitness.SoloFitnessEvol;
 import gr.evoltrio.midi.MusicConfiguration;
 import gr.evoltrio.midi.SongBuilder;
 
@@ -43,22 +44,28 @@ public class Evolution {
 
     protected MusicChromosome[] phrases;
 
-    public Evolution() {
-        // file = new File(filename);
-        String[] emptyStuff = { "", "" };
-        parser = new CliParametersParser(emptyStuff);
-        evolConf = parser.getEvolConfig();
-        soloFitness = parser.getSoloFitness();
-        parser.getMusicConfig();
-        musicConf = MusicConfiguration.getInstance();
-        setup();
-    }
+//    public Evolution() {
+//        // file = new File(filename);
+//        String[] emptyStuff = { "", "" };
+//        parser = new CliParametersParser(emptyStuff);
+//        evolConf = parser.getEvolConfig();
+//        soloFitness = parser.getSoloFitness();
+//        parser.getMusicConfig();
+//        musicConf = MusicConfiguration.getInstance();
+//        setup();
+//    }
 
     public Evolution(String args[]) {
         parser = new CliParametersParser(args);
         evolConf = parser.getEvolConfig();
         soloFitness = parser.getSoloFitness();
         parser.getMusicConfig();
+        musicConf = MusicConfiguration.getInstance();
+    }
+    
+    public Evolution() {
+        evolConf = new EvolConfiguration();
+        soloFitness = new SoloFitnessEvol();
         musicConf = MusicConfiguration.getInstance();
     }
 
@@ -86,6 +93,13 @@ public class Evolution {
 
         // set the phrase count
         phrases = new MusicChromosome[musicConf.getChordProgression().length];
+        
+        try {
+            population = Genotype.randomInitialGenotype(evolConf);
+        } catch (InvalidConfigurationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -107,11 +121,14 @@ public class Evolution {
         this.evolConf = evolConf;
     }
 
-    /**
-     * @return the musicConf
-     */
-    public MusicConfiguration getMusicConf() {
-        return musicConf;
+    
+
+    public FitnessFunction getSoloFitness() {
+        return soloFitness;
+    }
+
+    public void setSoloFitness(FitnessFunction soloFitness) {
+        this.soloFitness = soloFitness;
     }
 
     public void play() {
@@ -127,7 +144,7 @@ public class Evolution {
 
     }
 
-    public void evolve1() throws Exception {
+    public void evolve() throws Exception {
 
         StringBuffer progress = new StringBuffer("|");
         int maxBars = 50;
@@ -166,16 +183,6 @@ public class Evolution {
 
         }
         System.out.println();
-    }
-    
-    public void setupOnce() {
-        setup();
-        try {
-            population = Genotype.randomInitialGenotype(evolConf);
-        } catch (InvalidConfigurationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
     }
     
     public double evolveOnce() {
@@ -238,7 +245,7 @@ public class Evolution {
         // }
         System.out.println("Evolving ...");
         evo.setup();
-        evo.evolve1();
+        evo.evolve();
         // evo.buildAndPlay();
         evo.buildAndSave();
         // evo.writeParameters();

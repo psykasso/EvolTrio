@@ -9,6 +9,8 @@
  */
 package gr.evoltrio.ui;
 
+import java.util.Collections;
+
 import gr.evoltrio.core.EvolConfiguration;
 import gr.evoltrio.core.Evolution;
 import gr.evoltrio.core.MusicChromosome;
@@ -18,7 +20,11 @@ import org.apache.pivot.charts.LineChartView;
 import org.apache.pivot.charts.content.Point;
 import org.apache.pivot.charts.content.ValueSeries;
 import org.apache.pivot.collections.ArrayList;
+import org.apache.pivot.collections.concurrent.SynchronizedList;
 import org.apache.pivot.collections.List;
+import org.apache.pivot.util.ListenerList;
+import org.apache.pivot.wtk.ComponentListener;
+import org.apache.pivot.wtk.ComponentMouseListener;
 import org.jgap.Genotype;
 import org.jgap.InvalidConfigurationException;
 
@@ -28,6 +34,10 @@ import org.jgap.InvalidConfigurationException;
  * @since 0.0.1
  */
 public class EvolutionRunner implements Runnable {
+    
+    public static final int PAUSED = 0;
+    public static final int RUNNING = 1;
+    public static final int RESET = 2;
 
     private List<ValueSeries<Point>> data;
 
@@ -39,14 +49,18 @@ public class EvolutionRunner implements Runnable {
 
     private boolean isEvolutionRunning = false;
 
-    Point point;
+    private Point point;
+    
+    private int iteration = 0;
 
     public EvolutionRunner(EvolTrioUI evolTrioUI, LineChartView evolutionChart, String[] args) {
         evolution = new Evolution(args);
         this.evolutionChart = evolutionChart;
-        evolution.setupOnce();
+        evolution.setup();
         this.evolTrioUI = evolTrioUI;
-        data = new ArrayList<ValueSeries<Point>>();
+        
+        List nonSyncList = new ArrayList<ValueSeries<Point>>();
+        data = new SynchronizedList<ValueSeries<Point>>(nonSyncList);
         data.add(new ValueSeries<Point>("cool"));
 
         // for (ValueSeries<Point> serie : data)
@@ -63,30 +77,51 @@ public class EvolutionRunner implements Runnable {
     @Override
     public void run() {
         // int iterations = ((EvolConfiguration) evolConf).getIterations();
-        int iteration = 0;
+        
         isEvolutionRunning = true;
         // ChartUpdater chartUpdater = new ChartUpdater("ChartUpdater");
 
         // generate chromosome-patterns
         while ( true && isEvolutionRunning ) {
             
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+//            try {
+//                Thread.sleep(1000);
+//            } catch (InterruptedException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
 
             point = new Point();
             point.setX(iteration);
-            point.setY((float) evolution.evolveOnce());
-            System.out.println(point.getY());
+            double fitness = evolution.evolveOnce();
+            point.setY((float) fitness);
+            //System.out.println(point.getY());
             data.get(0).insert(point, iteration);
+            //evolutionChart.setHeightLimits(10000, 10020);
+            
             evolutionChart.setChartData(data);
+            
+            //evolutionChart.get
+            
             //evolutionChart.repaint();
-            evolutionChart.setPreferredHeight(200);
+            //evolutionChart.setPreferredHeight(200);
             //evolutionChart.setSize(200,200);
-            evolutionChart.setPreferredWidth(200);
+            //evolutionChart.setPreferredWidth(200);
+            
+            
+//            evolTrioUI.getIterationLabel().setText("" + iteration);
+//            evolTrioUI.getIterationLabel().requestFocus();
+//            evolTrioUI.getFitnessLabel().setText("" + fitness);
+//            
+//            evolTrioUI.getIterationLabel().setPreferredHeight(100);
+//            
+//            ListenerList<ComponentMouseListener> listeners = evolTrioUI.getFitnessLabel().getComponentMouseListeners();
+//            
+//            for(ComponentMouseListener list: listeners){
+//                System.out.println(list);
+//                list.mouseMove(evolTrioUI.getIterationLabel(), 0, 0);
+//            }
+                
             
             
             iteration++;
@@ -118,6 +153,11 @@ public class EvolutionRunner implements Runnable {
     public void setEvolutionRunning(boolean isEvolutionRunning) {
         this.isEvolutionRunning = isEvolutionRunning;
     }
+
+    public synchronized int getIteration() {
+        return iteration;
+    }
+    
     
     
 

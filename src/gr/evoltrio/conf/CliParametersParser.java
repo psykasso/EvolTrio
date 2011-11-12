@@ -427,7 +427,7 @@ public class CliParametersParser {
 		// TODO figure out smt for the invalid parameters
 		return new EvolConfiguration(randomGen, naturalSel,
 				executeNaturalBefore, minPopSizePercent, selectFromPrevGen,
-				keepPopSizeConstant, crossoverRate, mutationRate, iterations, popSize);
+				keepPopSizeConstant, crossoverRate, mutationRate, iterations);
 
 	}
 
