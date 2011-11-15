@@ -16,12 +16,11 @@
 					splitRatio="0.6">
 					<left>
 						<Border styles="{padding:6}">
-							<charts:LineChartView bxml:id="evolutionLineChartView"
-								TabPane.tabData="XY" seriesNameKey="name" title="Fitness Evaluation"
-								horizontalAxisLabel="Iteration" verticalAxisLabel="Fitness Value"
-								showLegend="true" styles="{threeDimensional:false}">
-
-							</charts:LineChartView>
+								<charts:LineChartView bxml:id="evolutionLineChartView"
+									TabPane.tabData="XY" seriesNameKey="name" title="Fitness Evaluation"
+									horizontalAxisLabel="Iteration" verticalAxisLabel="Fitness Value"
+									showLegend="true" styles="{threeDimensional:true}">
+								</charts:LineChartView>
 						</Border>
 					</left>
 					<right>
@@ -143,7 +142,7 @@
 
 								</BoxPane>
 							</Border>
-							
+
 							<BoxPane
 								styles="{horizontalAlignment:'center', verticalAlignment:'center'}">
 								<PushButton bxml:id="resetButton">
@@ -153,8 +152,8 @@
 									<content:ButtonData icon="@icons/system-run.svg" />
 								</PushButton>
 								<PushButton bxml:id="toggleEvolutionButton">
-                  <content:ButtonData icon="@icons/media-playback-pause.svg" />
-                </PushButton>
+									<content:ButtonData icon="@icons/media-playback-pause.svg" />
+								</PushButton>
 								<PushButton bxml:id="playButton">
 									<content:ButtonData icon="@icons/media-playback-start.svg" />
 								</PushButton>
@@ -162,7 +161,7 @@
 									<content:ButtonData icon="@icons/document-save.svg" />
 								</PushButton>
 								<ActivityIndicator bxml:id="activityIndicator"
-                styles="{color:16}" preferredWidth="96" preferredHeight="96" />
+									styles="{color:16}" preferredWidth="96" preferredHeight="96" />
 							</BoxPane>
 
 						</BoxPane>

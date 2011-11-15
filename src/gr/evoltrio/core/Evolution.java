@@ -17,11 +17,13 @@ import gr.evoltrio.midi.SongBuilder;
 import java.io.File;
 import java.util.List;
 
+import org.jgap.Configuration;
 import org.jgap.FitnessFunction;
 import org.jgap.Gene;
 import org.jgap.Genotype;
 import org.jgap.IChromosome;
 import org.jgap.InvalidConfigurationException;
+import org.jgap.Population;
 import org.jgap.impl.IntegerGene;
 
 /**
@@ -37,7 +39,7 @@ public class Evolution {
     private Gene[] sampleGenes;
     protected EvolConfiguration evolConf;
     private MusicChromosome sampleChromosome;
-    private FitnessFunction soloFitness;
+    private SoloFitnessEvol soloFitness;
 
     private CliParametersParser parser;
     protected MusicConfiguration musicConf;
@@ -57,6 +59,7 @@ public class Evolution {
 
     public Evolution(String args[]) {
         parser = new CliParametersParser(args);
+//        Configuration.reset();
         evolConf = parser.getEvolConfig();
         soloFitness = parser.getSoloFitness();
         parser.getMusicConfig();
@@ -64,8 +67,12 @@ public class Evolution {
     }
     
     public Evolution() {
+        Configuration.reset();
         evolConf = new EvolConfiguration();
+        Configuration.reset();
+        evolConf.setTheConfiguration();
         soloFitness = new SoloFitnessEvol();
+        soloFitness.addAllFilters();
         musicConf = MusicConfiguration.getInstance();
     }
 
@@ -127,7 +134,7 @@ public class Evolution {
         return soloFitness;
     }
 
-    public void setSoloFitness(FitnessFunction soloFitness) {
+    public void setSoloFitness(SoloFitnessEvol soloFitness) {
         this.soloFitness = soloFitness;
     }
 
@@ -188,6 +195,10 @@ public class Evolution {
     public double evolveOnce() {
         population.evolve();
         return population.getFittestChromosome().getFitnessValue();
+    }
+    
+    public Genotype getPopulation() {
+        return population;
     }
 
     /**

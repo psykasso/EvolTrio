@@ -84,7 +84,7 @@ public class EvolConfiguration extends Configuration {
 
 	// TODO remove this constructor as it's not going to be used
 	public EvolConfiguration() {
-		this("stock", "Best Chromosome", false, 100, 0.0, true, 35.0, 12, 1000);
+		this("stock", "Best", false, 100, 0.0, true, 35.0, 12, 1000);
 	}
 
 	public EvolConfiguration(String randomGen, String naturalSel,

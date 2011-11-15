@@ -16,10 +16,13 @@
  */
 package gr.evoltrio.ui;
 
+import gr.evoltrio.core.MusicChromosome;
 import gr.evoltrio.exception.InvalidConfigurationException;
 import gr.evoltrio.midi.MusicConfiguration;
+import gr.evoltrio.midi.SongBuilder;
 import gr.evoltrio.test.ui.SleepTask;
 
+import java.io.File;
 import java.net.URL;
 
 import org.apache.pivot.beans.Bindable;
@@ -28,6 +31,7 @@ import org.apache.pivot.charts.content.Point;
 import org.apache.pivot.charts.content.ValueSeries;
 import org.apache.pivot.collections.ArrayList;
 import org.apache.pivot.collections.List;
+import org.apache.pivot.collections.ListListener;
 import org.apache.pivot.collections.Map;
 import org.apache.pivot.collections.concurrent.SynchronizedList;
 import org.apache.pivot.util.Resources;
@@ -37,15 +41,19 @@ import org.apache.pivot.wtk.ActivityIndicator;
 import org.apache.pivot.wtk.Button;
 import org.apache.pivot.wtk.ButtonPressListener;
 import org.apache.pivot.wtk.Component;
+import org.apache.pivot.wtk.FileBrowserSheet;
 import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.ListButton;
 import org.apache.pivot.wtk.Meter;
 import org.apache.pivot.wtk.PushButton;
+import org.apache.pivot.wtk.Sheet;
+import org.apache.pivot.wtk.SheetCloseListener;
 import org.apache.pivot.wtk.Slider;
 import org.apache.pivot.wtk.SliderValueListener;
 import org.apache.pivot.wtk.TaskAdapter;
 import org.apache.pivot.wtk.Window;
 import org.apache.pivot.wtk.media.Image;
+import org.jgap.Configuration;
 
 public class EvolTrioUI extends Window implements Bindable {
 
@@ -110,6 +118,9 @@ public class EvolTrioUI extends Window implements Bindable {
 
     private ActivityIndicator activityIndicator = null;
 
+    private TaskListener<String> taskListener;
+    private TaskAdapter<String> taskAdapter;
+
     @Override
     public void initialize(Map<String, Object> namespace, URL location,
             Resources resources) {
@@ -118,16 +129,32 @@ public class EvolTrioUI extends Window implements Bindable {
 
         evolutionChart = (LineChartView) namespace
                 .get("evolutionLineChartView");
-        // evolutionChart.set
-        evolutionChart.setHeightLimits(100, 100);
-        evolutionChart.setHeight(10000);
-        evolutionChart.repaint(true);
-        evolutionChart.setVisible(true);
+        evolutionChart.setEnabled(false);
+//        evolutionChart.validate();
+//        // evolutionChart.set
+//        evolutionChart.setHeightLimits(100, 100);
+//        evolutionChart.setHeight(10000);
+//        evolutionChart.repaint(true);
+        
+       
+        List data = new ArrayList<ValueSeries<Point>>();
+        //data = new SynchronizedList<ValueSeries<Point>>(nonSyncList);
+        data.add(new ValueSeries<Point>("cool"));
+        
+        data.getListListeners().add(new ListListener.Adapter<ValueSeries<Point>>() {
+
+            @Override
+            public void itemInserted(List<ValueSeries<Point>> list, int index) {
+                System.out.println("cool!!");
+            }
+            
+        });
+
 
         // evolRunner = new EvolutionRunner(evolTrioUI, evolutionChart, new
         // String[]{"-1"});
-        evolutionTask = new EvolutionTask(this, evolutionChart,
-                new String[] { "-1" });
+//        evolutionTask = new EvolutionTask(this, evolutionChart,
+//                new String[] { "-1" });
 
         // BXMLSerializer bxmlSerializer = new BXMLSerializer();
         // namespace.get
@@ -283,64 +310,48 @@ public class EvolTrioUI extends Window implements Bindable {
 
             @Override
             public void buttonPressed(Button button) {
+                evolutionTask.setState(evolutionTask.RESET);
+                
+                activityIndicator.setActive(false);
                 enableComponents();
+                evolveButton.setVisible(true);
+                toggleEvolutionButton.setVisible(false);
+                resetButton.setEnabled(false);
+                
+                
+                reset();
             }
         });
 
         evolveButton.getButtonPressListeners().add(new ButtonPressListener() {
             @Override
             public void buttonPressed(Button button) {
-                activityIndicator.setActive(true);
-                // setEnabled(false);
-
-                System.out.println("Starting evolution.");
-
-                TaskListener<String> taskListener = new TaskListener<String>() {
-                    @Override
-                    public void taskExecuted(Task<String> task) {
-                        // activityIndicator.setActive(false);
-                        setEnabled(true);
-
-                        System.out
-                                .println("Synchronous task execution complete: \""
-                                        + task.getResult() + "\"");
-                    }
-
-                    @Override
-                    public void executeFailed(Task<String> task) {
-                        // activityIndicator.setActive(false);
-                        setEnabled(true);
-
-                        //System.err.println(task.getFault());
-                    }
-                };
-
-                evolutionTask.setupEvolutionTask();
-                evolutionTask.start();
-                // Image pauseImg = new Image();
-                // evolveButton.setButtonData();
-                evolutionTask.execute(new TaskAdapter<String>(taskListener));
-
-                evolveButton.setVisible(false);
-                toggleEvolutionButton.setVisible(true);
-                disableComponents();
+                startEvolution();
             }
         });
-        
-        toggleEvolutionButton.getButtonPressListeners().add(new ButtonPressListener() {
 
-            @Override
-            public void buttonPressed(Button button) {
-                if(evolutionTask.getState() == EvolutionTask.RUNNING) {
-                    evolutionTask.setState(evolutionTask.PAUSED);
-                    activityIndicator.setEnabled(false);
-                }
-                else if(evolutionTask.getState() == EvolutionTask.PAUSED) {
-                    evolutionTask.setState(evolutionTask.RUNNING);
-                    activityIndicator.setEnabled(true);
-                }
-            }
-        });
+        toggleEvolutionButton.getButtonPressListeners().add(
+                new ButtonPressListener() {
+
+                    @Override
+                    public void buttonPressed(Button button) {
+
+                        if (evolutionTask.getState() == EvolutionTask.RUNNING) {
+                            evolutionTask.setState(evolutionTask.PAUSED);
+                            activityIndicator.setActive(false);
+
+                            saveButton.setEnabled(true);
+                            playButton.setEnabled(true);
+                        } else if (evolutionTask.getState() == EvolutionTask.PAUSED) {
+                            evolutionTask.setState(evolutionTask.RUNNING);
+                            activityIndicator.setActive(true);
+                            evolutionTask.execute(taskAdapter);
+
+                            saveButton.setEnabled(false);
+                            playButton.setEnabled(false);
+                        }
+                    }
+                });
 
         playButton.getButtonPressListeners().add(new ButtonPressListener() {
 
@@ -349,8 +360,85 @@ public class EvolTrioUI extends Window implements Bindable {
                 activityIndicator.setEnabled(false);
             }
         });
+        
+        saveButton.getButtonPressListeners().add(new ButtonPressListener() {
+
+            @Override
+            public void buttonPressed(Button button) {
+                final FileBrowserSheet fileBrowserSheet = new FileBrowserSheet();
+                fileBrowserSheet.setMode(FileBrowserSheet.Mode.valueOf("SAVE_AS")) ;
+                fileBrowserSheet.setSelectedFile(new File(fileBrowserSheet.getRootDirectory(), "song.mid"));
+                fileBrowserSheet.open(EvolTrioUI.this, new SheetCloseListener() {
+                    
+                    @Override
+                    public void sheetClosed(Sheet sheet) {
+                        MusicChromosome[] phrases = new MusicChromosome[1];
+                        phrases[0] = (MusicChromosome) evolutionTask.getEvolution().getPopulation().getFittestChromosome();                       
+                        //TODO change this!
+                        phrases[0].updateAbsolute();
+                        File selectedFile = fileBrowserSheet.getSelectedFile();
+                        System.out.println(phrases[0]);
+                        SongBuilder sb = new SongBuilder(selectedFile, phrases, MusicConfiguration.getInstance());
+                        sb.buildSong();
+                        sb.saveTheSong();
+                        
+                    }
+                });
+                
+                
+            }
+        });
 
     } // end of startup
+
+    private void startEvolution() {
+        //disable all active components: slides and list buttons.
+        activityIndicator.setActive(true);
+        
+//        Configuration.reset();
+        System.out.println("Starting evolution.");
+
+        
+
+        
+        evolutionTask = new EvolutionTask(this, evolutionChart,
+                new String[] { "-1" });
+        setupOptions();
+        taskListener = initTaskListener();
+        taskAdapter = new TaskAdapter<String>(taskListener);
+
+        evolutionTask.setupEvolutionTask();
+        evolutionTask.start();
+        // Image pauseImg = new Image();
+        // evolveButton.setButtonData();
+        evolutionTask.execute(taskAdapter);
+
+        evolveButton.setVisible(false);
+        toggleEvolutionButton.setVisible(true);
+        resetButton.setEnabled(true);
+        
+    }
+
+    public TaskListener<String> initTaskListener() {
+        return new TaskListener<String>() {
+            @Override
+            public void taskExecuted(Task<String> task) {
+                // activityIndicator.setActive(false);
+                setEnabled(true);
+
+                System.out.println("Synchronous task execution complete: \""
+                        + task.getResult() + "\"");
+            }
+
+            @Override
+            public void executeFailed(Task<String> task) {
+                // activityIndicator.setActive(false);
+                setEnabled(true);
+
+                // System.err.println(task.getFault());
+            }
+        };
+    }
 
     /**
      * @return the evolutionMeter
@@ -385,66 +473,34 @@ public class EvolTrioUI extends Window implements Bindable {
     // Updater functions for the slider listeners
     private void updateRestOffset() {
         restOffsetLabel.setText(Integer.toString(restOffsetSlider.getValue()));
-        MusicConfiguration.getInstance().setRestOffset(
-                restOffsetSlider.getValue());
     }
 
     private void updatePhraseNotes() {
         phraseNotesLabel.setText("" + phraseNotesSlider.getValue());
-        MusicConfiguration.getInstance().setPhraseNotes(
-                phraseNotesSlider.getValue());
     }
 
     private void updateIntJump() {
         intJumpLabel.setText("" + intJumpSlider.getValue());
-        MusicConfiguration.getInstance().setMaxIntervalJump(
-                phraseNotesSlider.getValue());
     }
 
     private void updateDurJump() {
         durJumpLabel.setText("" + durJumpSlider.getValue());
-        MusicConfiguration.getInstance().setMaxDurationJump(
-                phraseNotesSlider.getValue());
     }
 
     private void updateOctave() {
         octaveLabel.setText(Integer.toString(octaveSlider.getValue()));
-        MusicConfiguration.getInstance()
-                .setOctave(phraseNotesSlider.getValue());
     }
 
     private void updateCrossover() {
         crossoverLabel.setText("" + crossoverSlider.getValue() + "%");
-        evolutionTask.getEvolution().getEvolConf()
-                .setCrossoverRate((double) crossoverSlider.getValue() / 100d);
     }
 
     private void updateMutation() {
         mutationLabel.setText("" + mutationSlider.getValue() + "%");
-        evolutionTask.getEvolution().getEvolConf()
-                .setMutationRate(mutationSlider.getValue());
     }
 
     private void updatePopSize() {
         popSizeLabel.setText("" + popSizeSlider.getValue());
-        evolutionTask.getEvolution().getEvolConf()
-                .setPopSize(popSizeSlider.getValue());
-    }
-
-    private void updateIterations() {
-        // iterationsLabel.setText(Integer.toString(iterationsSlider.getValue()));
-        if (evolutionChart != null) {
-            Point p = new Point();
-            p.setX(cnt++);
-            p.setY((float) (Math.random() * 100));
-
-            ValueSeries<Point> ser1 = data.get(0);
-            ser1.add(p);
-            data.update(0, ser1);
-
-            evolutionChart.setChartData(data);
-
-        }
     }
 
     public void disableComponents() {
@@ -460,5 +516,33 @@ public class EvolTrioUI extends Window implements Bindable {
             else
                 System.out.println(comp);
         }
+    }
+
+    public void reset() {
+
+        iterationLabel.setText("" + 0);
+        fitnessLabel.setText("" + 0);
+        
+    }
+    
+    private void setupOptions() {
+        
+        MusicConfiguration.getInstance().setRestOffset(
+                restOffsetSlider.getValue());
+        MusicConfiguration.getInstance().setPhraseNotes(
+                phraseNotesSlider.getValue());
+        MusicConfiguration.getInstance().setMaxIntervalJump(
+                intJumpSlider.getValue());
+        MusicConfiguration.getInstance().setMaxDurationJump(
+                durJumpSlider.getValue());
+        MusicConfiguration.getInstance()
+                .setOctave(octaveSlider.getValue());
+
+        evolutionTask.getEvolution().getEvolConf()
+                .setCrossoverRate((double) crossoverSlider.getValue() / 100d);
+        evolutionTask.getEvolution().getEvolConf()
+                .setMutationRate(mutationSlider.getValue());
+        evolutionTask.getEvolution().getEvolConf()
+                .setPopSize(popSizeSlider.getValue());
     }
 }

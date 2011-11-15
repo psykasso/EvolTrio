@@ -25,60 +25,81 @@ import org.jgap.IChromosome;
  */
 public class SoloFitnessEvol extends FitnessFunction {
 
-	/**
-	 * TODO What is this ?
-	 */
-	private static final long serialVersionUID = -2021750101153709817L;
-	private int keyNote;
-	private int begginingDuration;
+    /**
+     * TODO What is this ?
+     */
+    private static final long serialVersionUID = -2021750101153709817L;
+    private int keyNote;
+    private int begginingDuration;
 
-	private Map<FiltersFactory.Filter, IFitnessFilter> filters;
+    private Map<FiltersFactory.Filter, IFitnessFilter> filters;
 
-	public SoloFitnessEvol() {
-		filters = new HashMap<FiltersFactory.Filter, IFitnessFilter>();
-	}
+    public SoloFitnessEvol() {
+        filters = new HashMap<FiltersFactory.Filter, IFitnessFilter>();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jgap.FitnessFunction#evaluate(org.jgap.IChromosome)
-	 */
-	@Override
-	protected double evaluate(IChromosome chromo) {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.jgap.FitnessFunction#evaluate(org.jgap.IChromosome)
+     */
+    @Override
+    protected double evaluate(IChromosome chromo) {
 
-		// TODO change to a different base
-		double evaluation = 10000;
+        // TODO change to a different base
+        //double evaluation = 10000;
+        double evaluation = 0;
 
-		// update abs genes for each chromosome
-		((MusicChromosome) chromo).updateAbsolute();
+        // update abs genes for each chromosome
+        ((MusicChromosome) chromo).updateAbsolute();
 
-		for (IFitnessFilter filter : filters.values())
-			try {
+        for (IFitnessFilter filter : filters.values())
+            try {
 
-				// TODO asign negative values to penalties
-				evaluation += filter.evaluate((MusicChromosome) chromo);
-			} catch (InvalidEvaluationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+                // TODO asign negative values to penalties
+                evaluation += filter.evaluate((MusicChromosome) chromo);
+            } catch (InvalidEvaluationException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
 
-		return evaluation;
-	}
+        return computeEvaluation(evaluation);
+    }
 
-	public void addFilter(FiltersFactory.Filter filter) {
-	    if (filter != null)
-	        filters.put(filter, FiltersFactory.getFilter(filter));
-	}
-	
-	public String toString() {
-	    String str = "---------------------------------------------------\n" +
-	                 " Fitness Filters                                   \n" +
-	                 "---------------------------------------------------\n\n";
-	    for(IFitnessFilter filter : filters.values()) {
-	        str += filter.getClass().getName() + "\n";
-	    }
-	    
-	    return str;
-	}
+    private double computeEvaluation(double x) {
+        if (x < 0)
+            return Math.pow((1 + (1 / x)), x);
+        else
+            return Math.pow(Math.E, x);
+    }
+
+    public void addFilter(FiltersFactory.Filter filter) {
+        if (filter != null)
+            filters.put(filter, FiltersFactory.getFilter(filter));
+    }
+
+    public void addAllFilters() {
+        addFilter(FiltersFactory.Filter.SIMPLEPITCH);
+        addFilter(FiltersFactory.Filter.SIMPLEDURATION);
+        addFilter(FiltersFactory.Filter.OUTOFSCALE);
+        addFilter(FiltersFactory.Filter.TIME);
+        addFilter(FiltersFactory.Filter.DULL);
+        addFilter(FiltersFactory.Filter.HIGHANDLOW);
+        addFilter(FiltersFactory.Filter.ROOTNOTE);
+        addFilter(FiltersFactory.Filter.THREENOTE);
+        addFilter(FiltersFactory.Filter.ASCENDING);
+        addFilter(FiltersFactory.Filter.DESCENDING);
+    }
+
+    public String toString() {
+        String str = "---------------------------------------------------\n"
+                + " Fitness Filters                                   \n"
+                + "---------------------------------------------------\n\n";
+        for (IFitnessFilter filter : filters.values()) {
+            str += filter.getClass().getName() + "\n";
+        }
+
+        return str;
+    }
 
 }
