@@ -33,6 +33,7 @@ public class MusicConfiguration {
 
     public static final Map<String, Integer> CHORDS;
     public static final Map<String, Double> DURATION_VALUES;
+    public static final Map<String, Integer> INSTRUMENTS;
 
     static {
         Map<String, Integer> chordsMap = new HashMap<String, Integer>();
@@ -66,6 +67,27 @@ public class MusicConfiguration {
         durationMap.put("s* ", 0.166666667);
 
         DURATION_VALUES = Collections.unmodifiableMap(durationMap);
+
+        Map<String, Integer> instrumentsMap = new HashMap<String, Integer>();
+        instrumentsMap.put("ELECTRIC_PIANO", 4);
+        instrumentsMap.put("MUSIC_BOX", 10);
+        instrumentsMap.put("ROCK_ORGAN", 18);
+        instrumentsMap.put("CHURCH_ORGAN", 19);
+        instrumentsMap.put("ELECTRIC_JAZZ_GUITAR", 26);
+        instrumentsMap.put("ELECTRIC_BASS_PICK", 34);
+        instrumentsMap.put("ORCHESTRAL_STRINGS", 46);
+        instrumentsMap.put("STRING_ENSEMBLE_1", 48);
+        instrumentsMap.put("STRING_ENSEMBLE_2", 49);
+        instrumentsMap.put("SYNTH_STRINGS_1", 50);
+        instrumentsMap.put("SYNTH_STRINGS_2", 51);
+        instrumentsMap.put("CHOIR_AAHS", 52);
+        instrumentsMap.put("VOICE_OOHS", 53);
+        instrumentsMap.put("SYNTH_VOICE", 54);
+        instrumentsMap.put("ORCHESTRA_HIT", 55);
+        instrumentsMap.put("TROMBONE", 57);
+        instrumentsMap.put("SYNTHBRASS_1", 62);
+        instrumentsMap.put("OBOE", 68);
+        INSTRUMENTS = Collections.unmodifiableMap(instrumentsMap);
     }
 
     /**
@@ -497,23 +519,47 @@ public class MusicConfiguration {
     }
 
     public String toString() {
-	    String str = "---------------------------------------------------\n" +
-	                 "Music Configuration                                \n" +
-	                 "---------------------------------------------------\n\n" +
-	                 "Rest Offset : " + restOffset + "\n" +
-	                 "Key Note : " + keyNote + "\n" + 
-	                 "Root Note : " + rootNote + " \n" +
-	                 "Octave : " + octave + "\n" +
-	                 "Music Pattern : " + musicPattern + "\n" +
-	                 "Beggining Duration : " + beginningDuration + "\n" +
-	                 "Phrase Notes : " + phraseNotes + "\n" + 
-	                 "Max Interval Jump : " + maxIntervalJump + "\n" + 
-	                 "Max Duration Jump : " + maxDurationJump + "\n" +
-	                 "Bass Pattern : " + bassPattern + "\n" +
-	                 "Drum Pattern : " + drumPattern + "\n" +
-	                 "Tempo : " + tempo + "\n" + 
-	                 "Solo Organ : " + soloOrgan + "\n\n";
-	                 
-	   return str;              
-	}
+        String str = "---------------------------------------------------\n"
+                + "Music Configuration                                \n"
+                + "---------------------------------------------------\n\n"
+                + "Rest Offset : "
+                + restOffset
+                + "\n"
+                + "Key Note : "
+                + keyNote
+                + "\n"
+                + "Root Note : "
+                + rootNote
+                + " \n"
+                + "Octave : "
+                + octave
+                + "\n"
+                + "Music Pattern : "
+                + musicPattern
+                + "\n"
+                + "Beggining Duration : "
+                + beginningDuration
+                + "\n"
+                + "Phrase Notes : "
+                + phraseNotes
+                + "\n"
+                + "Max Interval Jump : "
+                + maxIntervalJump
+                + "\n"
+                + "Max Duration Jump : "
+                + maxDurationJump
+                + "\n"
+                + "Bass Pattern : "
+                + bassPattern
+                + "\n"
+                + "Drum Pattern : "
+                + drumPattern
+                + "\n"
+                + "Tempo : "
+                + tempo
+                + "\n"
+                + "Solo Organ : " + soloOrgan + "\n\n";
+
+        return str;
+    }
 }

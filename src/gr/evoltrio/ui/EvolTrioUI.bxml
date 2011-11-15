@@ -68,26 +68,25 @@
 									<BoxPane orientation="horizontal" styles="{fill:'true'}">
 										<Label text="Beg Dur" preferredWidth="100" />
 										<ListButton bxml:id="begDurListButton"
-											preferredWidth="150"
-											listData="['IMG_0725_2.jpg', 'IMG_0735_2.jpg', 'IMG_0767_2.jpg']" />
+											preferredWidth="150" listData="[]"/>
 									</BoxPane>
 
 									<BoxPane orientation="horizontal" styles="{fill:'true'}">
 										<Label text="Key Note" preferredWidth="100" />
 										<ListButton bxml:id="keyNoteListButton"
-											preferredWidth="150" listData="['C', 'C#', 'D']" />
+											preferredWidth="150" listData="[]"/>
 									</BoxPane>
 
 									<BoxPane orientation="horizontal" styles="{fill:'true'}">
 										<Label text="Tempo" preferredWidth="100" />
 										<ListButton bxml:id="tempoListButton"
-											preferredWidth="150" listData="['Adagio', 'Allegreto', 'Vivace']" />
+											preferredWidth="150" listData="[]"/>
 									</BoxPane>
 
 									<BoxPane orientation="horizontal" styles="{fill:'true'}">
 										<Label text="Organ" preferredWidth="100" />
 										<ListButton bxml:id="organListButton"
-											preferredWidth="150" listData="['Voice Ohs', 'Violin', 'Guitar']" />
+											preferredWidth="150" listData="[]" />
 									</BoxPane>
 
 								</BoxPane>
@@ -160,6 +159,8 @@
 								<PushButton bxml:id="saveButton">
 									<content:ButtonData icon="@icons/document-save.svg" />
 								</PushButton>
+							</BoxPane>
+							<BoxPane>
 								<ActivityIndicator bxml:id="activityIndicator"
 									styles="{color:16}" preferredWidth="96" preferredHeight="96" />
 							</BoxPane>

@@ -1,7 +1,5 @@
 package gr.evoltrio.ui;
 
-import java.util.Comparator;
-
 import gr.evoltrio.core.Evolution;
 import gr.evoltrio.midi.MusicConfiguration;
 
@@ -10,12 +8,8 @@ import org.apache.pivot.charts.content.Point;
 import org.apache.pivot.charts.content.ValueSeries;
 import org.apache.pivot.collections.ArrayList;
 import org.apache.pivot.collections.List;
-import org.apache.pivot.collections.ListListener;
-import org.apache.pivot.collections.Sequence;
-import org.apache.pivot.collections.concurrent.SynchronizedList;
 import org.apache.pivot.util.concurrent.Task;
 import org.apache.pivot.util.concurrent.TaskExecutionException;
-import org.apache.pivot.wtk.Label;
 
 public class EvolutionTask extends Task<String> {
 
@@ -29,8 +23,8 @@ public class EvolutionTask extends Task<String> {
     private EvolTrioUI evolTrioUI;
     private Evolution evolution;
     private LineChartView evolutionChart;
-    private Point point;
-    private int iteration = 0;
+
+    private int iteration;
 
     public EvolutionTask(EvolTrioUI evolTrioUI, LineChartView evolutionChart,
             String[] args) {
@@ -39,25 +33,17 @@ public class EvolutionTask extends Task<String> {
 
         this.evolTrioUI = evolTrioUI;
 
-        List nonSyncList = new ArrayList<ValueSeries<Point>>();
-        data = new SynchronizedList<ValueSeries<Point>>(nonSyncList);
-        
-        data.add(new ValueSeries<Point>("cool"));
-        
-        data.getListListeners().add(new ListListener.Adapter<ValueSeries<Point>>() {
+        data = new ArrayList<ValueSeries<Point>>();
 
-            @Override
-            public void itemInserted(List<ValueSeries<Point>> list, int index) {
-                System.out.println("cool!!");
-            }
-            
-        });
+        data.add(new ValueSeries<Point>("Best Chromosome"));
+        evolutionChart.setChartData(data);
 
+        iteration = 0;
         state = EvolutionTask.RESET;
     }
-    
+
     public void setupEvolutionTask() {
-          evolution.setup();
+        evolution.setup();
 
         System.out.println(evolution.getEvolConf());
         System.out.println(MusicConfiguration.getInstance());
@@ -66,32 +52,25 @@ public class EvolutionTask extends Task<String> {
 
     @Override
     public String execute() throws TaskExecutionException {
-        
 
         while (state == EvolutionTask.RUNNING) {
-            
-            
-                point = new Point();
-                point.setX(iteration);
-                double fitness = evolution.evolveOnce();
-                point.setY((float) fitness);
-                
-//                if(iteration % 50 == 0) {
-//                data.add(new ValueSeries<Point>("iteration :" + iteration));
-                data.get(0).insert(point, iteration);
-                evolutionChart.setChartData(data);
-//                }
-                evolTrioUI.getIterationLabel().setText("" + iteration);
-                evolTrioUI.getFitnessLabel().setText("" + fitness);
-    
-                iteration++;
+            Point point = new Point();
+            point.setX(iteration);
+            double fitness = evolution.evolveOnce();
+            point.setY((float) fitness);
 
-//                System.out.println(evolution.getPopulation().getFittestChromosome().getFitnessValue());
+            data.get(0).insert(point, iteration);
+            evolutionChart.setChartData(data);
+
+            evolTrioUI.getIterationLabel().setText("" + iteration);
+            evolTrioUI.getFitnessLabel().setText("" + fitness);
+
+            iteration++;
         }
-        
-        if(state == EvolutionTask.RESET)
+
+        if (state == EvolutionTask.RESET)
             evolTrioUI.getIterationLabel().setText("" + 0);
-        
+
         return null;
     }
 
@@ -99,11 +78,7 @@ public class EvolutionTask extends Task<String> {
         return evolution;
     }
     
-    public synchronized void setState(int state) {
-        this.state = state;
-    }
-    
-    public synchronized int getState() {
+    public int getState() {
         return state;
     }
 

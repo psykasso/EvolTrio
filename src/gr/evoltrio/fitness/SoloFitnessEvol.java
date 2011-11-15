@@ -47,8 +47,8 @@ public class SoloFitnessEvol extends FitnessFunction {
     protected double evaluate(IChromosome chromo) {
 
         // TODO change to a different base
-        //double evaluation = 10000;
-        double evaluation = 0;
+        double evaluation = 500;
+        //double evaluation = 0;
 
         // update abs genes for each chromosome
         ((MusicChromosome) chromo).updateAbsolute();
@@ -63,7 +63,7 @@ public class SoloFitnessEvol extends FitnessFunction {
                 e.printStackTrace();
             }
 
-        return computeEvaluation(evaluation);
+        return (evaluation<0) ? 0 : evaluation;
     }
 
     private double computeEvaluation(double x) {
