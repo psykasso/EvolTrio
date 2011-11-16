@@ -24,7 +24,8 @@ public class EvolutionTask extends Task<String> {
     private Evolution evolution;
     private LineChartView evolutionChart;
 
-    private int iteration;
+    //TODO change this
+    public int iteration;
 
     public EvolutionTask(EvolTrioUI evolTrioUI, LineChartView evolutionChart,
             String[] args) {
@@ -59,8 +60,13 @@ public class EvolutionTask extends Task<String> {
             double fitness = evolution.evolveOnce();
             point.setY((float) fitness);
 
-            data.get(0).insert(point, iteration);
-            evolutionChart.setChartData(data);
+            //data.get(0).insert(point, iteration);
+            ((ValueSeries<Point>)(evolutionChart.getChartData().get(0))).add(point);
+            //evolutionChart.setChartData(data);
+//            if(iteration % 10 == 0){
+//                evolutionChart.invalidate();
+//                evolutionChart.getParent().repaint(0,0,evolutionChart.getParent().getWidth(),evolutionChart.getParent().getWidth());
+//            }
 
             evolTrioUI.getIterationLabel().setText("" + iteration);
             evolTrioUI.getFitnessLabel().setText("" + fitness);
@@ -92,6 +98,10 @@ public class EvolutionTask extends Task<String> {
 
     public void reset() {
         state = EvolutionTask.RESET;
+    }
+    
+    public int getIteration() {
+        return iteration;
     }
 
 }

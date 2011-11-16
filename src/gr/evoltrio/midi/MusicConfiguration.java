@@ -11,6 +11,7 @@ package gr.evoltrio.midi;
 
 import gr.evoltrio.exception.InvalidConfigurationException;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -167,7 +168,7 @@ public class MusicConfiguration {
      * The index of the solo organ. Refer to jfuguekeyNote manual for the organ
      * indexing.
      */
-    private int soloOrgan = 72;
+    private int soloOrgan = 18;
 
     /**
      * Applying the singleton pattern.
@@ -509,13 +510,13 @@ public class MusicConfiguration {
         }
         this.soloOrgan = soloOrgan;
     }
-
-    public static void main(String[] args) {
-        MusicConfiguration mc = new MusicConfiguration();
-        mc.setMusicPattern("I-I-I-I-V-V-V-VI-VI-I-I");
-        for (String s : mc.chordProgression)
-            System.out.println(MAJOR_INTERVALS[CHORDS.get(s)]);
-        System.out.println();
+    
+    public void setSoloOrgan(String instrument) { 
+            soloOrgan = INSTRUMENTS.get(instrument);
+    }
+    
+    public static double getSmallestDuration() {
+        return Collections.min(DURATION_VALUES.values());
     }
 
     public String toString() {
@@ -561,5 +562,14 @@ public class MusicConfiguration {
                 + "Solo Organ : " + soloOrgan + "\n\n";
 
         return str;
+    }
+    
+
+    public static void main(String[] args) {
+        MusicConfiguration mc = new MusicConfiguration();
+        mc.setMusicPattern("I-I-I-I-V-V-V-VI-VI-I-I");
+        for (String s : mc.chordProgression)
+            System.out.println(MAJOR_INTERVALS[CHORDS.get(s)]);
+        System.out.println();
     }
 }

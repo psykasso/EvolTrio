@@ -183,7 +183,7 @@ public class MusicChromosome extends Chromosome {
 			jFugueRoundedPattern = jFuguePattern;
 			double desiredDuration = (((int) duration / 4) + 1) * 4;
 			// System.out.println(desiredDuration);
-			while (desiredDuration - duration < 0.1) {
+			while (Math.abs(desiredDuration - duration) > MusicConfiguration.getSmallestDuration()) {
 
 				System.out.println("desired : " + desiredDuration);
 				System.out.println("pattern : " + duration);

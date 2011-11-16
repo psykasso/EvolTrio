@@ -11,6 +11,8 @@ package gr.evoltrio.fitness;
 
 import gr.evoltrio.core.MusicChromosome;
 import gr.evoltrio.exception.InvalidEvaluationException;
+import gr.evoltrio.fitness.FiltersFactory.Filter;
+import gr.evoltrio.tools.Stats;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,12 +60,23 @@ public class SoloFitnessEvol extends FitnessFunction {
 
                 // TODO asign negative values to penalties
                 evaluation += filter.evaluate((MusicChromosome) chromo);
+                //stats
+                Stats.getInstance().add(getKeyByValue(filter),evaluation);
             } catch (InvalidEvaluationException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
         return (evaluation<0) ? 0 : evaluation;
+    }
+    
+    private FiltersFactory.Filter getKeyByValue(IFitnessFilter filter) {
+        for(Filter key : filters.keySet())
+            if(filters.get(key).equals(filter))
+                return key;
+        
+        //should never happen
+        return null;
     }
 
     private double computeEvaluation(double x) {
@@ -76,6 +89,10 @@ public class SoloFitnessEvol extends FitnessFunction {
     public void addFilter(FiltersFactory.Filter filter) {
         if (filter != null)
             filters.put(filter, FiltersFactory.getFilter(filter));
+    }
+    
+    public Map<Filter, IFitnessFilter> getActiveFilters() {
+        return filters;
     }
 
     public void addAllFilters() {

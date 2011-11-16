@@ -18,16 +18,24 @@ package gr.evoltrio.ui;
 
 import gr.evoltrio.core.MusicChromosome;
 import gr.evoltrio.exception.InvalidConfigurationException;
+import gr.evoltrio.fitness.SoloFitnessEvol;
+import gr.evoltrio.fitness.FiltersFactory.Filter;
 import gr.evoltrio.midi.MusicConfiguration;
 import gr.evoltrio.midi.SongBuilder;
 import gr.evoltrio.test.ui.SleepTask;
+import gr.evoltrio.tools.Stats;
+
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.Arrays;
 
 import org.apache.pivot.beans.Bindable;
+import org.apache.pivot.charts.BarChartView;
 import org.apache.pivot.charts.LineChartView;
+import org.apache.pivot.charts.content.CategorySeries;
+import org.apache.pivot.charts.content.Interval;
 import org.apache.pivot.charts.content.Point;
 import org.apache.pivot.charts.content.ValueSeries;
 import org.apache.pivot.collections.ArrayList;
@@ -46,6 +54,7 @@ import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.FileBrowserSheet;
 import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.ListButton;
+import org.apache.pivot.wtk.ListButtonSelectionListener;
 import org.apache.pivot.wtk.Meter;
 import org.apache.pivot.wtk.PushButton;
 import org.apache.pivot.wtk.Sheet;
@@ -109,6 +118,8 @@ public class EvolTrioUI extends Window implements Bindable {
 
     // Fitness chart
     private LineChartView evolutionChart = null;
+    
+    private BarChartView statsBarChartView = null;
 
     // private ValueSeries<Point> fitnessData = new ValueSeries<Point>();
 
@@ -139,7 +150,9 @@ public class EvolTrioUI extends Window implements Bindable {
 
         evolutionChart = (LineChartView) namespace
                 .get("evolutionLineChartView");
-        evolutionChart.setEnabled(false);
+        statsBarChartView = (BarChartView) namespace
+                .get("statsBarChartView");
+        //evolutionChart.setEnabled(false);
         // evolutionChart.validate();
         // // evolutionChart.set
         // evolutionChart.setHeightLimits(100, 100);
@@ -217,6 +230,7 @@ public class EvolTrioUI extends Window implements Bindable {
         
         for (String instrument : MusicConfiguration.INSTRUMENTS.keySet())
             ((List<Object>) organListButton.getListData()).add(instrument);
+        organListButton.setSelectedIndex(0);
         
         activeComponents.add(organListButton);
 
@@ -371,6 +385,31 @@ public class EvolTrioUI extends Window implements Bindable {
 
                             saveButton.setEnabled(true);
                             playButton.setEnabled(true);
+                            
+                            //print stats
+                            Stats.getInstance().printStats(evolutionTask.getIteration());
+                            
+                            java.util.Map<Filter, BigDecimal> stats = Stats.getInstance().getStats();
+                           
+                           List<ValueSeries<Interval>> statsData = new ArrayList<ValueSeries<Interval>>();
+                           Interval interval = new Interval();
+                           
+                           
+                            int index = 0;
+                            for(Filter filter : stats.keySet()){
+                                Interval p = new Interval();
+                                p.setX(index);
+                                p.setY(stats.get(filter).floatValue());
+                                p.setWidth(0.5f);
+                                statsData.add(new ValueSeries<Interval>("" + filter));
+                                statsData.get(index++).add(p);
+                                //statsData.get(index).insert(p, index++);
+                                //data.get(0).put(filter.toString(), stats.get(filter).floatValue());
+                            }
+                            
+                            statsBarChartView.setChartData(statsData);
+                                
+                            
                         } else if (evolutionTask.getState() == EvolutionTask.PAUSED) {
                             evolutionTask.start();
                             activityIndicator.setActive(true);
@@ -519,6 +558,10 @@ public class EvolTrioUI extends Window implements Bindable {
     private void updateDurJump() {
         durJumpLabel.setText("" + durJumpSlider.getValue());
     }
+    
+    private void updateOrgan() {
+        MusicConfiguration.getInstance().setSoloOrgan(organListButton.getSelectedItemKey());
+    }
 
     private void updateOctave() {
         octaveLabel.setText(Integer.toString(octaveSlider.getValue()));
@@ -569,6 +612,8 @@ public class EvolTrioUI extends Window implements Bindable {
         MusicConfiguration.getInstance().setMaxDurationJump(
                 durJumpSlider.getValue());
         MusicConfiguration.getInstance().setOctave(octaveSlider.getValue());
+        
+        MusicConfiguration.getInstance().setSoloOrgan(organListButton.getSelectedItem().toString());
 
         evolutionTask.getEvolution().getEvolConf()
                 .setCrossoverRate((double) crossoverSlider.getValue() / 100d);

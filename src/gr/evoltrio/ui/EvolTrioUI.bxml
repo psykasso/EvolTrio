@@ -15,13 +15,39 @@
 				<SplitPane bxml:id="splitPane" orientation="horizontal"
 					splitRatio="0.6">
 					<left>
-						<Border styles="{padding:6}">
-								<charts:LineChartView bxml:id="evolutionLineChartView"
-									TabPane.tabData="XY" seriesNameKey="name" title="Fitness Evaluation"
-									horizontalAxisLabel="Iteration" verticalAxisLabel="Fitness Value"
-									showLegend="true" styles="{threeDimensional:true}">
-								</charts:LineChartView>
-						</Border>
+						<TabPane bxml:id="tabPane">
+							<corner>
+								<Label
+									styles="{horizontalAlignment:'right', verticalAlignment:'center'}"
+									text="Evoltrio -- Version 0.0.1" />
+							</corner>
+
+							<Border>
+								<TabPane.tabData>
+									<content:ButtonData text="Fitness" />
+								</TabPane.tabData>
+								<Border styles="{padding:2}">
+									<charts:LineChartView bxml:id="evolutionLineChartView"
+										TabPane.tabData="XY" seriesNameKey="name" title="Fitness Evaluation"
+										horizontalAxisLabel="Iteration" verticalAxisLabel="Fitness Value"
+										showLegend="true" styles="{threeDimensional:true}">
+									</charts:LineChartView>
+								</Border>
+							</Border>
+
+							<Border>
+								<TabPane.tabData>
+									<content:ButtonData text="Fitness" />
+								</TabPane.tabData>
+								<Border styles="{padding:2}">
+									<charts:BarChartView bxml:id="statsBarChartView" TabPane.tabData="XY"
+										seriesNameKey="name" title="XY Bar Chart Example"
+										horizontalAxisLabel="X" verticalAxisLabel="Y"
+										showLegend="true" styles="{threeDimensional:true}" >
+									</charts:BarChartView>
+									</Border>
+							</Border>
+						</TabPane>
 					</left>
 					<right>
 
@@ -68,19 +94,19 @@
 									<BoxPane orientation="horizontal" styles="{fill:'true'}">
 										<Label text="Beg Dur" preferredWidth="100" />
 										<ListButton bxml:id="begDurListButton"
-											preferredWidth="150" listData="[]"/>
+											preferredWidth="150" listData="[]" />
 									</BoxPane>
 
 									<BoxPane orientation="horizontal" styles="{fill:'true'}">
 										<Label text="Key Note" preferredWidth="100" />
 										<ListButton bxml:id="keyNoteListButton"
-											preferredWidth="150" listData="[]"/>
+											preferredWidth="150" listData="[]" />
 									</BoxPane>
 
 									<BoxPane orientation="horizontal" styles="{fill:'true'}">
 										<Label text="Tempo" preferredWidth="100" />
 										<ListButton bxml:id="tempoListButton"
-											preferredWidth="150" listData="[]"/>
+											preferredWidth="150" listData="[]" />
 									</BoxPane>
 
 									<BoxPane orientation="horizontal" styles="{fill:'true'}">
