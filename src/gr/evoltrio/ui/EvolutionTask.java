@@ -70,7 +70,8 @@ public class EvolutionTask extends Task<String> {
 
             evolTrioUI.getIterationLabel().setText("" + iteration);
             evolTrioUI.getFitnessLabel().setText("" + fitness);
-
+            evolTrioUI.getBestChromosomeLabel().setText(evolution.getFittestChromosome().getJFuguePattern());
+            
             iteration++;
         }
 

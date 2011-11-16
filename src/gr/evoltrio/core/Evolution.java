@@ -197,6 +197,10 @@ public class Evolution {
         return population.getFittestChromosome().getFitnessValue();
     }
     
+    public MusicChromosome getFittestChromosome() {
+        return (MusicChromosome) population.getFittestChromosome();
+    }
+    
     public Genotype getPopulation() {
         return population;
     }

@@ -37,12 +37,12 @@
 
 							<Border>
 								<TabPane.tabData>
-									<content:ButtonData text="Fitness" />
+									<content:ButtonData text="Stats" />
 								</TabPane.tabData>
 								<Border styles="{padding:2}">
 									<charts:BarChartView bxml:id="statsBarChartView" TabPane.tabData="XY"
-										seriesNameKey="name" title="XY Bar Chart Example"
-										horizontalAxisLabel="X" verticalAxisLabel="Y"
+										seriesNameKey="name" title="Stats"
+										horizontalAxisLabel="Rating" verticalAxisLabel="Filter"
 										showLegend="true" styles="{threeDimensional:true}" >
 									</charts:BarChartView>
 									</Border>
