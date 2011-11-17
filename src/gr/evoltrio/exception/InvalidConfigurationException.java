@@ -17,7 +17,7 @@ package gr.evoltrio.exception;
 public class InvalidConfigurationException extends RuntimeException {
 
 	/**
-	 * 
+	 * Auto generated
 	 */
 	private static final long serialVersionUID = 1L;
 

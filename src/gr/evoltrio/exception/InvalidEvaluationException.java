@@ -21,6 +21,11 @@ public class InvalidEvaluationException extends Exception {
 
 
 	/**
+     * Auto generated
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
 	 * Constructs a new InvalidEvaluationException instance with the
 	 * given error message.
    	 * 

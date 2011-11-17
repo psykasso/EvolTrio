@@ -17,23 +17,18 @@
 package gr.evoltrio.ui;
 
 import gr.evoltrio.core.MusicChromosome;
-import gr.evoltrio.exception.InvalidConfigurationException;
-import gr.evoltrio.fitness.SoloFitnessEvol;
 import gr.evoltrio.fitness.FiltersFactory.Filter;
 import gr.evoltrio.midi.MusicConfiguration;
 import gr.evoltrio.midi.SongBuilder;
-import gr.evoltrio.test.ui.SleepTask;
 import gr.evoltrio.tools.Stats;
 
 import java.io.File;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.util.Arrays;
 
 import org.apache.pivot.beans.Bindable;
 import org.apache.pivot.charts.BarChartView;
 import org.apache.pivot.charts.LineChartView;
-import org.apache.pivot.charts.content.CategorySeries;
 import org.apache.pivot.charts.content.Interval;
 import org.apache.pivot.charts.content.Point;
 import org.apache.pivot.charts.content.ValueSeries;
@@ -41,7 +36,6 @@ import org.apache.pivot.collections.ArrayList;
 import org.apache.pivot.collections.List;
 import org.apache.pivot.collections.ListListener;
 import org.apache.pivot.collections.Map;
-import org.apache.pivot.collections.concurrent.SynchronizedList;
 import org.apache.pivot.util.Resources;
 import org.apache.pivot.util.concurrent.Task;
 import org.apache.pivot.util.concurrent.TaskListener;
@@ -53,7 +47,6 @@ import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.FileBrowserSheet;
 import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.ListButton;
-import org.apache.pivot.wtk.ListButtonSelectionListener;
 import org.apache.pivot.wtk.Meter;
 import org.apache.pivot.wtk.PushButton;
 import org.apache.pivot.wtk.Sheet;
@@ -62,8 +55,6 @@ import org.apache.pivot.wtk.Slider;
 import org.apache.pivot.wtk.SliderValueListener;
 import org.apache.pivot.wtk.TaskAdapter;
 import org.apache.pivot.wtk.Window;
-import org.apache.pivot.wtk.media.Image;
-import org.jgap.Configuration;
 
 public class EvolTrioUI extends Window implements Bindable {
 
@@ -91,6 +82,9 @@ public class EvolTrioUI extends Window implements Bindable {
     private ListButton organListButton = null;
 
     // Evolutionary Panel
+    private Slider selectFromPrevGenSlider = null;
+    private Label selectFromPrevGenLabel = null;
+    
     private Slider crossoverSlider = null;
     private Label crossoverLabel = null;
 
@@ -239,6 +233,11 @@ public class EvolTrioUI extends Window implements Bindable {
         begDurListButton.setSelectedIndex(((List<Object>)begDurListButton.getListData()).indexOf("i "));
 
         activeComponents.add(organListButton);
+        
+        //evolutionary
+        selectFromPrevGenSlider = (Slider) namespace.get("selectFromPrevGenSlider");
+        activeComponents.add(selectFromPrevGenSlider);
+        selectFromPrevGenLabel = (Label) namespace.get("selectFromPrevGenLabel");
 
         crossoverSlider = (Slider) namespace.get("crossoverSlider");
         activeComponents.add(crossoverSlider);
@@ -316,6 +315,16 @@ public class EvolTrioUI extends Window implements Bindable {
 
             }
         });
+        
+        selectFromPrevGenSlider.getSliderValueListeners().add(
+                new SliderValueListener() {
+
+                    @Override
+                    public void valueChanged(Slider slider, int previousValue) {
+                        updateSelectFromPrevGen();
+
+                    }
+                });
 
         crossoverSlider.getSliderValueListeners().add(
                 new SliderValueListener() {
@@ -348,6 +357,7 @@ public class EvolTrioUI extends Window implements Bindable {
         resetButton = (PushButton) namespace.get("resetButton");
         resetButton.setEnabled(false);
         evolveButton = (PushButton) namespace.get("evolveButton");
+        evolveButton.setTooltipText("Start evolution!");
         toggleEvolutionButton = (PushButton) namespace
                 .get("toggleEvolutionButton");
         toggleEvolutionButton.setVisible(false);
@@ -574,6 +584,10 @@ public class EvolTrioUI extends Window implements Bindable {
     private void updateOctave() {
         octaveLabel.setText(Integer.toString(octaveSlider.getValue()));
     }
+    
+    private void updateSelectFromPrevGen() {
+        selectFromPrevGenLabel.setText("" + selectFromPrevGenSlider.getValue() + "%");
+    }
 
     private void updateCrossover() {
         crossoverLabel.setText("" + crossoverSlider.getValue() + "%");
@@ -631,6 +645,8 @@ public class EvolTrioUI extends Window implements Bindable {
         
         MusicConfiguration.getInstance().setTempo(tempoListButton.getSelectedItem().toString());
 
+        evolutionTask.getEvolution().getEvolConf()
+        .setSelectFromPrevGen((double) selectFromPrevGenSlider.getValue() / 100d);
         evolutionTask.getEvolution().getEvolConf()
                 .setCrossoverRate((double) crossoverSlider.getValue() / 100d);
         evolutionTask.getEvolution().getEvolConf()

@@ -13,17 +13,16 @@ import org.jgap.Configuration;
 import org.jgap.DefaultFitnessEvaluator;
 import org.jgap.InvalidConfigurationException;
 import org.jgap.event.EventManager;
-import org.jgap.impl.CrossoverOperator;
-import org.jgap.impl.GABreeder;
-import org.jgap.impl.TournamentSelector;
 import org.jgap.impl.BestChromosomesSelector;
 import org.jgap.impl.CauchyRandomGenerator;
 import org.jgap.impl.ChromosomePool;
+import org.jgap.impl.CrossoverOperator;
+import org.jgap.impl.GABreeder;
 import org.jgap.impl.GaussianRandomGenerator;
 import org.jgap.impl.MutationOperator;
 import org.jgap.impl.StockRandomGenerator;
-import org.jgap.impl.SwappingMutationOperator;
 import org.jgap.impl.ThresholdSelector;
+import org.jgap.impl.TournamentSelector;
 import org.jgap.impl.WeightedRouletteSelector;
 
 /**
@@ -33,6 +32,11 @@ import org.jgap.impl.WeightedRouletteSelector;
  */
 public class EvolConfiguration extends Configuration {
     
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     public static final int DEFAULT_POP_SIZE = 100;
 
 	public static final String[] NATURALSELECTORS = { "best", "threshold",
@@ -47,7 +51,7 @@ public class EvolConfiguration extends Configuration {
 	private boolean executeNaturalBefore = false;
 	private int minPopSizePercent = 0;
 	private double selectFromPrevGen = 1.0d;
-	private boolean keepPopSizeConstant = true;
+	private boolean keepPopSizeConstant = false;
 	private double crossoverRate = 0.55d;
 	private int mutationRate = 32;
 
@@ -84,7 +88,7 @@ public class EvolConfiguration extends Configuration {
 
 	// TODO remove this constructor as it's not going to be used
 	public EvolConfiguration() {
-		this("stock", "Best", false, 100, 0.0, true, 35.0, 12, 1000);
+		this("stock", "Best", false, 0, 1.0d, false, 35.0, 12, 1000);
 	}
 
 	public EvolConfiguration(String randomGen, String naturalSel,
@@ -287,8 +291,8 @@ public class EvolConfiguration extends Configuration {
 	    String str = "---------------------------------------------------\n" +
                      "Evolutionary Settings\n" + 
                      "---------------------------------------------------\n\n" +
-                     "Random Generator : " + randomGen + "\n" + 
-                     "Natural Selector : " + naturalSel + "\n" +
+                     "Random Generator : " + getRandomGenerator() + "\n" + 
+                     "Natural Selector : " + getNaturalSelector() + "\n" +
                      "Execute Natural Selector before GO : " + executeNaturalBefore + "\n" +
                      "Min Population Size Percent : " + minPopSizePercent + "\n" +
                      "Select From previous Generation " + selectFromPrevGen + "\n" +

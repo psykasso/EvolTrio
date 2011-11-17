@@ -165,7 +165,7 @@ public class Evolution {
             for (int j = 0; j <= iterations; j++) {
                 // System.out.println("Phrase: " + (i+1) + ", iteration: " + j);
 
-                progress = new StringBuffer("Progress: "
+                progress = new StringBuffer("Fitness : " + population.getFittestChromosome().getFitnessValue() + "\tProgress: "
                         + (int) (((double) (i * iterations + j)
                                 / (phrases.length * iterations) * 100)) + "% ");
                 progress.append("|");
@@ -193,7 +193,9 @@ public class Evolution {
     }
     
     public double evolveOnce() {
+        
         population.evolve();
+        updateAbsolutePopulation(population);
         return population.getFittestChromosome().getFitnessValue();
     }
     

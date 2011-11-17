@@ -27,41 +27,42 @@ import gr.evoltrio.fitness.impl.TimeFilter;
  */
 public class FiltersFactory {
 
-	public static enum Filter {
-		SIMPLEPITCH, SIMPLEDURATION, OUTOFSCALE, TIME, DULL, HIGHANDLOW, ROOTNOTE, ASCENDING, DESCENDING, THREENOTE
-	}
+    public static enum Filter {
+        SIMPLEPITCH, SIMPLEDURATION, OUTOFSCALE, TIME, DULL, HIGHANDLOW, ROOTNOTE, ASCENDING, DESCENDING, THREENOTE
+    }
 
-	public static IFitnessFilter getFilter(Filter filter) {
-		switch (filter) {
-		case SIMPLEPITCH:
-			return new SimplePitchFilter();
-		case SIMPLEDURATION:
-			return new SimpleDurationFilter();
-		case OUTOFSCALE:
-			return new OutOfScaleFilter();
-		case TIME:
-			return new TimeFilter();
-		case DULL:
-			return new DullFilter();
-		case HIGHANDLOW:
-			return new HighAndLowFilter();
-		case ROOTNOTE:
-			return new RootNoteFilter();
-		case ASCENDING:
-			return new AscendingFilter();
-		case DESCENDING:
-			return new DescendingFilter();
-		case THREENOTE:
-			return new ThreeNoteFilter();
+    public static IFitnessFilter getFilter(Filter filter) {
+        switch (filter) {
+        case SIMPLEPITCH:
+            return new SimplePitchFilter();
+        case SIMPLEDURATION:
+            return new SimpleDurationFilter();
+        case OUTOFSCALE:
+            return new OutOfScaleFilter();
+        case TIME:
+            return new TimeFilter();
+        case DULL:
+            return new DullFilter();
+        case HIGHANDLOW:
+            return new HighAndLowFilter();
+        case ROOTNOTE:
+            return new RootNoteFilter();
+        case ASCENDING:
+            return new AscendingFilter();
+        case DESCENDING:
+            return new DescendingFilter();
+        case THREENOTE:
+            return new ThreeNoteFilter();
 
-		default:
-			return null;		// should never happen
-		}
-	}
-	//TODO remove this
-	public static void main(String[] args) {
-		for(Filter f :Filter.values())
-			System.out.println(f);
-	}
+        default:
+            return null; // should never happen
+        }
+    }
+
+    // TODO remove this
+    public static void main(String[] args) {
+        for (Filter f : Filter.values())
+            System.out.println(f);
+    }
 
 }

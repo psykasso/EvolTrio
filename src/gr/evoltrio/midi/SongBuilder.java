@@ -13,7 +13,6 @@ import gr.evoltrio.core.MusicChromosome;
 
 import java.io.File;
 import java.io.IOException;
-import org.jgap.IChromosome;
 import org.jfugue.Pattern;
 import org.jfugue.Player;
 /**
@@ -63,7 +62,8 @@ public class SongBuilder {
         Pattern voice1 = bp.getBassPattern();
 
         Pattern voice2 = new Pattern();
-        voice2.add(DrumPatterns.getDrumPattern("", phraseDuration));
+        //TODO change this
+        //voice2.add(DrumPatterns.getDrumPattern("", phraseDuration));
         //voice2.add(DrumPatterns.getDrumPattern(drumPattern, (int)(dur/4),1));
 
         //System.out.println(voice0);

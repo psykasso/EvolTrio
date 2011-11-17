@@ -49,7 +49,7 @@ public class SoloFitnessEvol extends FitnessFunction {
     protected double evaluate(IChromosome chromo) {
 
         // TODO change to a different base
-        double evaluation = 500;
+        double evaluation = 300;
         //double evaluation = 0;
 
         // update abs genes for each chromosome
@@ -57,11 +57,8 @@ public class SoloFitnessEvol extends FitnessFunction {
 
         for (IFitnessFilter filter : filters.values())
             try {
-
                 // TODO asign negative values to penalties
                 evaluation += filter.evaluate((MusicChromosome) chromo);
-                //stats
-                Stats.getInstance().add(getKeyByValue(filter),evaluation);
             } catch (InvalidEvaluationException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

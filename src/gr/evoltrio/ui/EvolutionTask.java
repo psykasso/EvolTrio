@@ -8,8 +8,11 @@ import org.apache.pivot.charts.content.Point;
 import org.apache.pivot.charts.content.ValueSeries;
 import org.apache.pivot.collections.ArrayList;
 import org.apache.pivot.collections.List;
+import org.apache.pivot.collections.ListListener;
+import org.apache.pivot.collections.ListListener.Adapter;
 import org.apache.pivot.util.concurrent.Task;
 import org.apache.pivot.util.concurrent.TaskExecutionException;
+import org.jfugue.extras.GetPatternForVoiceTool;
 
 public class EvolutionTask extends Task<String> {
 
@@ -35,6 +38,25 @@ public class EvolutionTask extends Task<String> {
         this.evolTrioUI = evolTrioUI;
 
         data = new ArrayList<ValueSeries<Point>>();
+        
+        data.getListListeners().add(new ListListener.Adapter<ValueSeries<Point>>() {
+
+            @Override
+            public void itemInserted(List<ValueSeries<Point>> list, int index) {
+                // TODO Auto-generated method stub
+                super.itemInserted(list, index);
+                System.out.println("Item inserted!");
+            }
+
+            @Override
+            public void itemUpdated(List<ValueSeries<Point>> list, int index,
+                    ValueSeries<Point> previousItem) {
+                // TODO Auto-generated method stub
+                super.itemUpdated(list, index, previousItem);
+                System.out.println("Item updated!");
+            }
+            
+        });
 
         data.add(new ValueSeries<Point>("Best Chromosome"));
         evolutionChart.setChartData(data);
@@ -60,8 +82,21 @@ public class EvolutionTask extends Task<String> {
             double fitness = evolution.evolveOnce();
             point.setY((float) fitness);
 
-            //data.get(0).insert(point, iteration);
-            ((ValueSeries<Point>)(evolutionChart.getChartData().get(0))).add(point);
+            data.get(0).insert(point, iteration);
+            //evolutionChart.invalidate();
+            int width = evolutionChart.getWidth() -1;
+            int height = evolutionChart.getHeight() -1;
+            //evolutionChart.invalidate();
+            evolutionChart.setWidth(width);
+            //evolutionChart.validate();
+            
+//            evolutionChart.repaint(true);
+           
+            //evolutionChart.getParent().invalidate();
+            //evolutionChart.getParent().setSize(width, height);
+            //evolutionChart.setWidth(evolutionChart.getWidth()-1);
+            //evolutionChart.getParent().repaint();
+            //((ValueSeries<Point>)(evolutionChart.getChartData().get(0))).add(point);
             //evolutionChart.setChartData(data);
 //            if(iteration % 10 == 0){
 //                evolutionChart.invalidate();
@@ -75,8 +110,11 @@ public class EvolutionTask extends Task<String> {
             iteration++;
         }
 
-        if (state == EvolutionTask.RESET)
+        if (state == EvolutionTask.RESET) {
             evolTrioUI.getIterationLabel().setText("" + 0);
+            evolTrioUI.getFitnessLabel().setText("" + 0);
+            evolTrioUI.getBestChromosomeLabel().setText("-");
+        }
 
         return null;
     }

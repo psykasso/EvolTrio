@@ -11,7 +11,6 @@ package gr.evoltrio.midi;
 
 import gr.evoltrio.exception.InvalidConfigurationException;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;

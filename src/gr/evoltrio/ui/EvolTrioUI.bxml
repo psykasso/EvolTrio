@@ -40,12 +40,12 @@
 									<content:ButtonData text="Stats" />
 								</TabPane.tabData>
 								<Border styles="{padding:2}">
-									<charts:BarChartView bxml:id="statsBarChartView" TabPane.tabData="XY"
-										seriesNameKey="name" title="Stats"
+									<charts:BarChartView bxml:id="statsBarChartView"
+										TabPane.tabData="XY" title="Stats"
 										horizontalAxisLabel="Rating" verticalAxisLabel="Filter"
-										showLegend="true" styles="{threeDimensional:true}" >
+										showLegend="true" styles="{threeDimensional:true}">
 									</charts:BarChartView>
-									</Border>
+								</Border>
 							</Border>
 						</TabPane>
 					</left>
@@ -71,7 +71,7 @@
 									</BoxPane>
 
 									<BoxPane orientation="horizontal" styles="{fill:'true'}">
-										<Label text="Int Jump" preferredWidth="100" />
+										<Label text="Interval Jump" preferredWidth="100" />
 										<Slider bxml:id="intJumpSlider" preferredWidth="200"
 											range="{start:1, end:12}" value="5" />
 										<Label bxml:id="intJumpLabel" text="5" width="10" />
@@ -85,7 +85,7 @@
 									</BoxPane>
 
 									<BoxPane orientation="horizontal" styles="{fill:'true'}">
-										<Label text="Dur Jump" preferredWidth="100" />
+										<Label text="Duration Jump" preferredWidth="100" />
 										<Slider bxml:id="durJumpSlider" preferredWidth="200"
 											range="{start:1, end:6}" value="1" />
 										<Label bxml:id="durJumpLabel" text="1" width="10" />
@@ -122,6 +122,13 @@
 								<BoxPane orientation="vertical"
 									styles="{padding:4, spacing:10, fill:true}">
 
+									<BoxPane orientation="horizontal" styles="{fill:'true'}">
+										<Label text="Sel From Prev Gen" preferredWidth="100" />
+										<Slider bxml:id="selectFromPrevGenSlider" preferredWidth="200"
+											range="{start:0, end:100}" value="100" />
+										<Label bxml:id="selectFromPrevGenLabel" text="100%" width="10" />
+									</BoxPane>
+									
 									<BoxPane orientation="horizontal" styles="{fill:'true'}">
 										<Label text="Crossover" preferredWidth="100" />
 										<Slider bxml:id="crossoverSlider" preferredWidth="200"
