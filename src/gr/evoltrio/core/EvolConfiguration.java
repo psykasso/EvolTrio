@@ -292,7 +292,7 @@ public class EvolConfiguration extends Configuration {
                      "Evolutionary Settings\n" + 
                      "---------------------------------------------------\n\n" +
                      "Random Generator : " + getRandomGenerator() + "\n" + 
-                     "Natural Selector : " + getNaturalSelector() + "\n" +
+                     "Natural Selector : " + naturalSel + "\n" +
                      "Execute Natural Selector before GO : " + executeNaturalBefore + "\n" +
                      "Min Population Size Percent : " + minPopSizePercent + "\n" +
                      "Select From previous Generation " + selectFromPrevGen + "\n" +

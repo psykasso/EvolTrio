@@ -17,6 +17,8 @@ import gr.evoltrio.midi.SongBuilder;
 import java.io.File;
 import java.util.List;
 
+import org.apache.pivot.wtk.DesktopApplicationContext;
+import org.apache.pivot.wtk.ScriptApplication;
 import org.jgap.Configuration;
 import org.jgap.FitnessFunction;
 import org.jgap.Gene;
@@ -248,9 +250,9 @@ public class Evolution {
 
     public static void main(String args[]) throws Exception {
 
-        for(String arg : args)
-            System.out.println(arg);
-        Evolution evo = new Evolution(args);
+//        for(String arg : args)
+//            System.out.println(arg);
+//        Evolution evo = new Evolution(args);
         // CmdLineParser parser = new CmdLineParser(evo);
         
         // if(args.length == 0){
@@ -260,12 +262,14 @@ public class Evolution {
         // System.out.println("\nTo view all the available options, type : java -jar EvolTrio.jar --help");
         // return;
         // }
-        System.out.println("Evolving ...");
-        evo.setup();
-        evo.evolve();
+        //System.out.println("Evolving ...");
+        //evo.setup();
+        //evo.evolve();
         // evo.buildAndPlay();
-        evo.buildAndSave();
+        //evo.buildAndSave();
         // evo.writeParameters();
-
+        //ScriptApplication sa = new ScriptApplication();
+        DesktopApplicationContext.main(ScriptApplication.class, new String[]{"--src=/gr/evoltrio/ui/EvolTrioUI.bxml"});
+        
     }
 }

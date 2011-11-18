@@ -7,7 +7,7 @@
  * or have a look at the top of class gr.evoltrio.evomusic.Evolution which representatively
  * includes the EvolTrio license policy applicable for any file delivered with EvolTrio.
  */
-package gr.evoltrio.tools;
+package gr.evoltrio.midi;
 
 import gr.evoltrio.midi.MusicConfiguration;
 

@@ -12,7 +12,6 @@ package gr.evoltrio.fitness;
 import gr.evoltrio.core.MusicChromosome;
 import gr.evoltrio.exception.InvalidEvaluationException;
 import gr.evoltrio.fitness.FiltersFactory.Filter;
-import gr.evoltrio.tools.Stats;
 
 import java.util.HashMap;
 import java.util.Map;

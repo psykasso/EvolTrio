@@ -20,7 +20,6 @@ import gr.evoltrio.core.MusicChromosome;
 import gr.evoltrio.fitness.FiltersFactory.Filter;
 import gr.evoltrio.midi.MusicConfiguration;
 import gr.evoltrio.midi.SongBuilder;
-import gr.evoltrio.tools.Stats;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -105,14 +104,13 @@ public class EvolTrioUI extends Window implements Bindable {
     // Buttons
     private PushButton resetButton;
     private PushButton evolveButton;
-    private PushButton toggleEvolutionButton;
+    private PushButton startEvolutionButton;
+    private PushButton pauseEvolutionButton;
     private PushButton playButton;
     private PushButton saveButton;
 
     // Fitness chart
     private LineChartView evolutionChart = null;
-
-    private BarChartView statsBarChartView = null;
 
     // private ValueSeries<Point> fitnessData = new ValueSeries<Point>();
 
@@ -143,7 +141,6 @@ public class EvolTrioUI extends Window implements Bindable {
 
         evolutionChart = (LineChartView) namespace
                 .get("evolutionLineChartView");
-        statsBarChartView = (BarChartView) namespace.get("statsBarChartView");
         // evolutionChart.setEnabled(false);
         // evolutionChart.validate();
         // // evolutionChart.set
@@ -354,17 +351,27 @@ public class EvolTrioUI extends Window implements Bindable {
             }
         });
 
+        // reset Button
         resetButton = (PushButton) namespace.get("resetButton");
         resetButton.setEnabled(false);
+        resetButton.setTooltipText("Reset current evolution");
+        // evolve Button
         evolveButton = (PushButton) namespace.get("evolveButton");
         evolveButton.setTooltipText("Start evolution!");
-        toggleEvolutionButton = (PushButton) namespace
-                .get("toggleEvolutionButton");
-        toggleEvolutionButton.setVisible(false);
+        // start evolution Button
+        startEvolutionButton = (PushButton) namespace.get("startEvolutionButton");
+        startEvolutionButton.setVisible(false);
+        startEvolutionButton.setTooltipText("Resume current evolution");
+        // pause evolution
+        pauseEvolutionButton = (PushButton) namespace.get("pauseEvolutionButton");
+        pauseEvolutionButton.setVisible(false);
+        pauseEvolutionButton.setTooltipText("Pause current evolution");
+        // play current chromosome
         playButton = (PushButton) namespace.get("playButton");
-        playButton.setEnabled(false);
+        playButton.setTooltipText("Listen to the best!");
+        // save current chromsome
         saveButton = (PushButton) namespace.get("saveButton");
-        saveButton.setEnabled(false);
+        saveButton.setTooltipText("Save the best!");
 
         resetButton.getButtonPressListeners().add(new ButtonPressListener() {
 
@@ -375,11 +382,10 @@ public class EvolTrioUI extends Window implements Bindable {
                 activityIndicator.setActive(false);
                 enableComponents();
                 evolveButton.setVisible(true);
-                toggleEvolutionButton.setVisible(false);
+                startEvolutionButton.setVisible(false);
                 resetButton.setEnabled(false);
 
                 reset();
-                Stats.getInstance().reset();
             }
         });
 
@@ -390,7 +396,7 @@ public class EvolTrioUI extends Window implements Bindable {
             }
         });
 
-        toggleEvolutionButton.getButtonPressListeners().add(
+        startEvolutionButton.getButtonPressListeners().add(
                 new ButtonPressListener() {
 
                     @Override
@@ -402,30 +408,6 @@ public class EvolTrioUI extends Window implements Bindable {
 
                             saveButton.setEnabled(true);
                             playButton.setEnabled(true);
-
-                            // print stats
-                            // Stats.getInstance().printStats(evolutionTask.getIteration());
-
-                            java.util.Map<Filter, BigDecimal> stats = Stats
-                                    .getInstance().getStats();
-
-                            List<ValueSeries<Interval>> statsData = new ArrayList<ValueSeries<Interval>>();
-
-                            int index = 0;
-                            for (Filter filter : stats.keySet()) {
-                                Interval p = new Interval();
-                                p.setX(index);
-                                p.setY(stats.get(filter).floatValue());
-                                p.setWidth(0.5f);
-                                statsData.add(new ValueSeries<Interval>(""
-                                        + filter));
-                                statsData.get(index++).add(p);
-                                // statsData.get(index).insert(p, index++);
-                                // data.get(0).put(filter.toString(),
-                                // stats.get(filter).floatValue());
-                            }
-
-                            statsBarChartView.setChartData(statsData);
 
                         } else if (evolutionTask.getState() == EvolutionTask.PAUSED) {
                             evolutionTask.start();
@@ -503,7 +485,7 @@ public class EvolTrioUI extends Window implements Bindable {
         evolutionTask.execute(taskAdapter);
 
         evolveButton.setVisible(false);
-        toggleEvolutionButton.setVisible(true);
+        startEvolutionButton.setVisible(true);
         resetButton.setEnabled(true);
 
     }

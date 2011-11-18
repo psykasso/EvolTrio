@@ -15,39 +15,15 @@
 				<SplitPane bxml:id="splitPane" orientation="horizontal"
 					splitRatio="0.6">
 					<left>
-						<TabPane bxml:id="tabPane">
-							<corner>
-								<Label
-									styles="{horizontalAlignment:'right', verticalAlignment:'center'}"
-									text="Evoltrio -- Version 0.0.1" />
-							</corner>
 
-							<Border>
-								<TabPane.tabData>
-									<content:ButtonData text="Fitness" />
-								</TabPane.tabData>
-								<Border styles="{padding:2}">
-									<charts:LineChartView bxml:id="evolutionLineChartView"
-										TabPane.tabData="XY" seriesNameKey="name" title="Fitness Evaluation"
-										horizontalAxisLabel="Iteration" verticalAxisLabel="Fitness Value"
-										showLegend="true" styles="{threeDimensional:true}">
-									</charts:LineChartView>
-								</Border>
-							</Border>
+						<Border styles="{padding:2}">
+							<charts:LineChartView bxml:id="evolutionLineChartView"
+								TabPane.tabData="XY" seriesNameKey="name" title="Fitness Evaluation"
+								horizontalAxisLabel="Iteration" verticalAxisLabel="Fitness Value"
+								showLegend="true" styles="{threeDimensional:true}">
+							</charts:LineChartView>
+						</Border>
 
-							<Border>
-								<TabPane.tabData>
-									<content:ButtonData text="Stats" />
-								</TabPane.tabData>
-								<Border styles="{padding:2}">
-									<charts:BarChartView bxml:id="statsBarChartView"
-										TabPane.tabData="XY" title="Stats"
-										horizontalAxisLabel="Rating" verticalAxisLabel="Filter"
-										showLegend="true" styles="{threeDimensional:true}">
-									</charts:BarChartView>
-								</Border>
-							</Border>
-						</TabPane>
 					</left>
 					<right>
 
@@ -124,11 +100,12 @@
 
 									<BoxPane orientation="horizontal" styles="{fill:'true'}">
 										<Label text="Sel From Prev Gen" preferredWidth="100" />
-										<Slider bxml:id="selectFromPrevGenSlider" preferredWidth="200"
-											range="{start:0, end:100}" value="100" />
-										<Label bxml:id="selectFromPrevGenLabel" text="100%" width="10" />
+										<Slider bxml:id="selectFromPrevGenSlider"
+											preferredWidth="200" range="{start:0, end:100}" value="100" />
+										<Label bxml:id="selectFromPrevGenLabel" text="100%"
+											width="10" />
 									</BoxPane>
-									
+
 									<BoxPane orientation="horizontal" styles="{fill:'true'}">
 										<Label text="Crossover" preferredWidth="100" />
 										<Slider bxml:id="crossoverSlider" preferredWidth="200"
@@ -183,11 +160,14 @@
 								<PushButton bxml:id="evolveButton">
 									<content:ButtonData icon="@icons/system-run.svg" />
 								</PushButton>
-								<PushButton bxml:id="toggleEvolutionButton">
-									<content:ButtonData icon="@icons/media-playback-pause.svg" />
-								</PushButton>
-								<PushButton bxml:id="playButton">
+								<PushButton bxml:id="startEvolutionButton">
 									<content:ButtonData icon="@icons/media-playback-start.svg" />
+								</PushButton>
+								<PushButton bxml:id="pauseEvolutionButton">
+                  <content:ButtonData icon="@icons/media-playback-pause.svg" />
+                </PushButton>
+								<PushButton bxml:id="playButton">
+									<content:ButtonData icon="@icons/rhythmbox.svg" />
 								</PushButton>
 								<PushButton bxml:id="saveButton">
 									<content:ButtonData icon="@icons/document-save.svg" />

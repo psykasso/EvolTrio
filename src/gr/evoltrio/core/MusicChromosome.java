@@ -10,7 +10,7 @@
 package gr.evoltrio.core;
 
 import gr.evoltrio.midi.MusicConfiguration;
-import gr.evoltrio.tools.MusicFactory;
+import gr.evoltrio.midi.MusicFactory;
 
 import java.lang.reflect.Constructor;
 import java.util.List;

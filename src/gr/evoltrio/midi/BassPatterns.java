@@ -9,8 +9,7 @@
  */
 package gr.evoltrio.midi;
 
-import gr.evoltrio.core.*;
-import gr.evoltrio.tools.MusicFactory;
+import gr.evoltrio.core.EvolConfiguration;
 
 import org.jfugue.Pattern;
 import org.jgap.Chromosome;
