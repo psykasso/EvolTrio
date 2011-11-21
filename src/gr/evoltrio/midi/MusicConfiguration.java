@@ -11,8 +11,10 @@ package gr.evoltrio.midi;
 
 import gr.evoltrio.exception.InvalidConfigurationException;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,6 +32,9 @@ public class MusicConfiguration {
     public static final String[] TEMPOS = { "Grave", "Largo", "Larghetto",
             "Lento", "Adagio", "Adagietto", "Andante", "Andantino", "Moderato",
             "Allegretto", "Allegro", "Vivace", "Presto", "Pretissimo" };
+
+    public static final String[] STATIC_DURATION_MAP = { "half - 1/2",
+            "quarter - 1/4", "eight - 1/8", "sixteenth - 1/16" };
 
     public static final Map<String, Integer> CHORDS;
     public static final Map<String, Double> DURATION_VALUES;
@@ -74,7 +79,10 @@ public class MusicConfiguration {
         instrumentsMap.put("ROCK_ORGAN", 18);
         instrumentsMap.put("CHURCH_ORGAN", 19);
         instrumentsMap.put("ELECTRIC_JAZZ_GUITAR", 26);
-        instrumentsMap.put("ELECTRIC_BASS_PICK", 34);
+        instrumentsMap.put("OVERDRIVEN_GUITAR", 29);
+        instrumentsMap.put("DISTORTION_GUITAR", 30);
+        instrumentsMap.put("GUITAR_HARMONICS", 31);
+        instrumentsMap.put("DISTORTION_GUITAR", 34);
         instrumentsMap.put("ORCHESTRAL_STRINGS", 46);
         instrumentsMap.put("STRING_ENSEMBLE_1", 48);
         instrumentsMap.put("STRING_ENSEMBLE_2", 49);
@@ -89,6 +97,50 @@ public class MusicConfiguration {
         instrumentsMap.put("OBOE", 68);
         INSTRUMENTS = Collections.unmodifiableMap(instrumentsMap);
     }
+
+    public static final List<String> INSTRUMENT_CATEGORIES = Arrays
+            .asList(new String[] { "Piano", "Chromatic Percussion", "Organ",
+                    "Guitar", "Bass", "Strings", "Ensemble", "Brass", "Reed",
+                    "Pipe", "Synth Lead", "Synth Pad", "Synth Effects",
+                    "Ethnic", "Percussive", "Sound Effects" });
+
+    public static final List<String> INSTRUMENT_NAMES = Arrays
+            .asList(new String[] { "ACOUSTIC GRAND PIANO",
+                    "BRIGHT ACOUSTIC PIANO", "ELECTRIC GRAND PIANO",
+                    "HONKY-TONK PIANO", "ELECTRIC PIANO 1", "ELECTRIC PIANO 2",
+                    "HARPSICHORD", "CLAVI", "CELESTA", "GLOCKENSPIEL",
+                    "MUSIC BOX", "VIBRAPHONE", "MARIMBA", "XYLOPHONE",
+                    "TUBULAR BELLS", "DULCIMER", "DRAWBAR ORGAN",
+                    "PERCUSSIVE ORGAN", "ROCK ORGAN", "CHURCH ORGAN",
+                    "REED ORGAN", "ACCORDION", "HARMONICA", "TANGO ACCORDION",
+                    "NYLON STRING GUITAR", "STEEL ACOUSTIC GUITAR",
+                    "JAZZ ELECTRIC GUITAR", "CLEAN ELECTRIC GUITAR",
+                    "MUTED ELECTRIC GUITAR", "OVERDRIVEN GUITAR",
+                    "DISTORTION GUITAR", "GUITAR HARMONICS", "ACOUSTIC BASS",
+                    "FINGERED ELECTRIC BASS", "PICKED ELECTRIC BASS",
+                    "FRETLESS BASS", "SLAP BASS 1", "SLAP BASS 2",
+                    "SYNTH BASS 1", "SYNTH BASS 2", "VIOLIN", "VIOLA", "CELLO",
+                    "CONTRABASS", "TREMOLO STRINGS", "PIZZICATO STRINGS",
+                    "ORCHESTRAL HARP", "TIMPANI", "STRING ENSEMBLE 1",
+                    "STRING ENSEMBLE 2", "SYNTH STRINGS 1", "SYNTH STRINGS 2",
+                    "CHOIR AAHS", "VOICE OOHS", "SYNTH VOICE", "ORCHESTRA HIT",
+                    "TRUMPET", "TROMBONE", "TUBA", "MUTED TRUMPET",
+                    "FRENCH HORN", "BRASS SECTION", "SYNTH BRASS 1",
+                    "SYNTH BRASS 2", "SOPRANO SAX", "ALTO SAX", "TENOR SAX",
+                    "BARITONE SAX", "OBOE", "ENGLISH HORN", "BASSOON",
+                    "CLARINET", "PICCOLO", "FLUTE", "RECORDER", "PAN FLUTE",
+                    "BLOWN BOTTLE", "SHAKUHACHI", "WHISTLE", "OCARINA",
+                    "SQUARE WAVE", "SAWTOOTH WAVE", "CALLIOPE", "CHIFF",
+                    "CHARANG", "VOICE", "FIFTHS", "BASS AND LEAD", "NEW AGE",
+                    "WARM", "POLYSYNTH", "CHOIR", "BOWED", "METAL", "HALO",
+                    "SWEEP", "RAIN", "SOUNDTRACK", "CRYSTAL", "ATMOSPHERE",
+                    "BRIGHTNESS", "GOBLINS", "ECHOES", "SCI-FI", "SITAR",
+                    "BANJO", "SHAMISEN", "KOTO", "KALIMBA", "BAG PIPE",
+                    "FIDDLE", "SHANAI", "TINKLE BELL", "AGOGO", "STEEL DRUMS",
+                    "WOODBLOCK", "TAIKO DRUM", "MELODIC TOM", "SYNTH DRUM",
+                    "REVERSE CYMBAL", "GUITAR FRET NOISE", "BREATH NOISE",
+                    "SEASHORE", "BIRD TWEET", "TELEPHONE RING", "HELICOPTER",
+                    "APPLAUSE", "GUNSHOT" });
 
     /**
      * The major intervals for a major scale.
@@ -356,13 +408,18 @@ public class MusicConfiguration {
      *            the beginningDuration to set
      */
     public void setBeginningDuration(int beginningDuration) {
-        if (beginningDuration < 1 || beginningDuration > 6) {
+        if (beginningDuration < 1 || beginningDuration > 11) {
             System.out
                     .println("MusicConfiguration: Invalid beginning duration value :"
                             + beginningDuration + ". Setting to default (7).");
             beginningDuration = 7;
         }
         this.beginningDuration = beginningDuration;
+    }
+
+    //TODO change this to smt more meaningful.
+    public void setStaticBeginningDuration(int duration) {
+        beginningDuration = (duration*3) + 1;
     }
 
     /**
@@ -509,11 +566,11 @@ public class MusicConfiguration {
         }
         this.soloOrgan = soloOrgan;
     }
-    
-    public void setSoloOrgan(String instrument) { 
-            soloOrgan = INSTRUMENTS.get(instrument);
+
+    public void setSoloOrgan(String instrument) {
+        soloOrgan = INSTRUMENTS.get(instrument);
     }
-    
+
     public static double getSmallestDuration() {
         return Collections.min(DURATION_VALUES.values());
     }
@@ -562,7 +619,6 @@ public class MusicConfiguration {
 
         return str;
     }
-    
 
     public static void main(String[] args) {
         MusicConfiguration mc = new MusicConfiguration();

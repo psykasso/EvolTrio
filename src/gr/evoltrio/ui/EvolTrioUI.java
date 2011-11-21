@@ -17,18 +17,14 @@
 package gr.evoltrio.ui;
 
 import gr.evoltrio.core.MusicChromosome;
-import gr.evoltrio.fitness.FiltersFactory.Filter;
 import gr.evoltrio.midi.MusicConfiguration;
 import gr.evoltrio.midi.SongBuilder;
 
 import java.io.File;
-import java.math.BigDecimal;
 import java.net.URL;
 
 import org.apache.pivot.beans.Bindable;
-import org.apache.pivot.charts.BarChartView;
 import org.apache.pivot.charts.LineChartView;
-import org.apache.pivot.charts.content.Interval;
 import org.apache.pivot.charts.content.Point;
 import org.apache.pivot.charts.content.ValueSeries;
 import org.apache.pivot.collections.ArrayList;
@@ -46,6 +42,7 @@ import org.apache.pivot.wtk.Component;
 import org.apache.pivot.wtk.FileBrowserSheet;
 import org.apache.pivot.wtk.Label;
 import org.apache.pivot.wtk.ListButton;
+import org.apache.pivot.wtk.ListButtonSelectionListener;
 import org.apache.pivot.wtk.Meter;
 import org.apache.pivot.wtk.PushButton;
 import org.apache.pivot.wtk.Sheet;
@@ -60,9 +57,6 @@ public class EvolTrioUI extends Window implements Bindable {
     private ArrayList<Component> activeComponents;
 
     // Music Panel
-    private Slider restOffsetSlider = null;
-    private Label restOffsetLabel = null;
-
     private Slider phraseNotesSlider = null;
     private Label phraseNotesLabel = null;
 
@@ -79,11 +73,12 @@ public class EvolTrioUI extends Window implements Bindable {
     private ListButton keyNoteListButton = null;
     private ListButton tempoListButton = null;
     private ListButton organListButton = null;
+    private ListButton instrumentSetListButton = null;
 
     // Evolutionary Panel
     private Slider selectFromPrevGenSlider = null;
     private Label selectFromPrevGenLabel = null;
-    
+
     private Slider crossoverSlider = null;
     private Label crossoverLabel = null;
 
@@ -137,6 +132,9 @@ public class EvolTrioUI extends Window implements Bindable {
     public void initialize(Map<String, Object> namespace, URL location,
             Resources resources) {
 
+        URL url = EvolTrioUI.class.getResource("icons/system-run.png");
+        this.setIcon(url);
+        
         activeComponents = new ArrayList<Component>();
 
         evolutionChart = (LineChartView) namespace
@@ -174,10 +172,6 @@ public class EvolTrioUI extends Window implements Bindable {
         // -----------------
         // Music Items Panel
         // -----------------
-        restOffsetSlider = (Slider) namespace.get("restOffsetSlider");
-        activeComponents.add(restOffsetSlider);
-        restOffsetLabel = (Label) namespace.get("restOffsetLabel");
-
         phraseNotesSlider = (Slider) namespace.get("phraseNotesSlider");
         activeComponents.add(phraseNotesSlider);
         phraseNotesLabel = (Label) namespace.get("phraseNotesLabel");
@@ -196,9 +190,10 @@ public class EvolTrioUI extends Window implements Bindable {
 
         begDurListButton = (ListButton) namespace.get("begDurListButton");
 
-        for (String duration : MusicConfiguration.DURATION_VALUES.keySet())
+        for (String duration : MusicConfiguration.STATIC_DURATION_MAP)
             ((List<Object>) begDurListButton.getListData()).add(duration);
-
+        
+        begDurListButton.setSelectedIndex(2); //eight
         activeComponents.add(begDurListButton);
 
         keyNoteListButton = (ListButton) namespace.get("keyNoteListButton");
@@ -206,35 +201,69 @@ public class EvolTrioUI extends Window implements Bindable {
         for (String note : MusicConfiguration.NOTES)
             ((List<Object>) keyNoteListButton.getListData()).add(note);
 
+        keyNoteListButton.setSelectedIndex(0);
         activeComponents.add(keyNoteListButton);
 
+        // Tempo List Button
         tempoListButton = (ListButton) namespace.get("tempoListButton");
 
         for (String tempo : MusicConfiguration.TEMPOS)
             ((List<Object>) tempoListButton.getListData()).add(tempo);
 
-        activeComponents.add(tempoListButton);
+        tempoListButton.setSelectedIndex(((List<Object>) tempoListButton
+                .getListData()).indexOf("Allegro"));
 
+        tempoListButton.getListButtonSelectionListeners().add(
+                new ListButtonSelectionListener.Adapter() {
+
+                    @Override
+                    public void selectedItemChanged(ListButton listButton,
+                            Object previousSelectedItem) {
+                        updateTempo();
+                    }
+                });
+
+        
+        // Instrument Set List Button
+        instrumentSetListButton = (ListButton) namespace.get("instrumentSetListButton");
+        
+        for (String set: MusicConfiguration.INSTRUMENT_CATEGORIES)
+            ((List<Object>) instrumentSetListButton.getListData()).add(set);
+        instrumentSetListButton.setSelectedIndex(0);
+        
+        instrumentSetListButton.getListButtonSelectionListeners().add(
+                new ListButtonSelectionListener.Adapter() {
+
+                    @Override
+                    public void selectedItemChanged(ListButton listButton,
+                            Object previousSelectedItem) {
+                        updateInstrumentSet();
+                    }
+                });
+        
+        // Instrument List Button
+        // TODO rename organ to instrument
         organListButton = (ListButton) namespace.get("organListButton");
-
-        for (String instrument : MusicConfiguration.INSTRUMENTS.keySet())
-            ((List<Object>) organListButton.getListData()).add(instrument);
+        updateInstrumentSet();
         organListButton.setSelectedIndex(0);
-        
-        tempoListButton = (ListButton) namespace.get("tempoListButton");
-        tempoListButton.setSelectedIndex(((List<Object>)tempoListButton.getListData()).indexOf("Allegro"));
-        
-        keyNoteListButton.setSelectedIndex(0);
-        
-        //TODO trim space
-        begDurListButton.setSelectedIndex(((List<Object>)begDurListButton.getListData()).indexOf("i "));
+        updateOrgan();
 
-        activeComponents.add(organListButton);
-        
-        //evolutionary
-        selectFromPrevGenSlider = (Slider) namespace.get("selectFromPrevGenSlider");
+        organListButton.getListButtonSelectionListeners().add(
+                new ListButtonSelectionListener.Adapter() {
+
+                    @Override
+                    public void selectedItemChanged(ListButton listButton,
+                            Object previousSelectedItem) {
+                        updateOrgan();
+                    }
+                });
+
+        // evolutionary
+        selectFromPrevGenSlider = (Slider) namespace
+                .get("selectFromPrevGenSlider");
         activeComponents.add(selectFromPrevGenSlider);
-        selectFromPrevGenLabel = (Label) namespace.get("selectFromPrevGenLabel");
+        selectFromPrevGenLabel = (Label) namespace
+                .get("selectFromPrevGenLabel");
 
         crossoverSlider = (Slider) namespace.get("crossoverSlider");
         activeComponents.add(crossoverSlider);
@@ -266,16 +295,6 @@ public class EvolTrioUI extends Window implements Bindable {
         // });
 
         // Music Panel Listeners
-        restOffsetSlider.getSliderValueListeners().add(
-                new SliderValueListener() {
-
-                    @Override
-                    public void valueChanged(Slider slider, int previousValue) {
-                        updateRestOffset();
-
-                    }
-                });
-
         phraseNotesSlider.getSliderValueListeners().add(
                 new SliderValueListener() {
 
@@ -312,7 +331,7 @@ public class EvolTrioUI extends Window implements Bindable {
 
             }
         });
-        
+
         selectFromPrevGenSlider.getSliderValueListeners().add(
                 new SliderValueListener() {
 
@@ -359,19 +378,23 @@ public class EvolTrioUI extends Window implements Bindable {
         evolveButton = (PushButton) namespace.get("evolveButton");
         evolveButton.setTooltipText("Start evolution!");
         // start evolution Button
-        startEvolutionButton = (PushButton) namespace.get("startEvolutionButton");
+        startEvolutionButton = (PushButton) namespace
+                .get("startEvolutionButton");
         startEvolutionButton.setVisible(false);
         startEvolutionButton.setTooltipText("Resume current evolution");
         // pause evolution
-        pauseEvolutionButton = (PushButton) namespace.get("pauseEvolutionButton");
+        pauseEvolutionButton = (PushButton) namespace
+                .get("pauseEvolutionButton");
         pauseEvolutionButton.setVisible(false);
         pauseEvolutionButton.setTooltipText("Pause current evolution");
         // play current chromosome
         playButton = (PushButton) namespace.get("playButton");
         playButton.setTooltipText("Listen to the best!");
+        playButton.setEnabled(false);
         // save current chromsome
         saveButton = (PushButton) namespace.get("saveButton");
         saveButton.setTooltipText("Save the best!");
+        saveButton.setEnabled(false);
 
         resetButton.getButtonPressListeners().add(new ButtonPressListener() {
 
@@ -383,7 +406,10 @@ public class EvolTrioUI extends Window implements Bindable {
                 enableComponents();
                 evolveButton.setVisible(true);
                 startEvolutionButton.setVisible(false);
+                pauseEvolutionButton.setVisible(false);
                 resetButton.setEnabled(false);
+                playButton.setEnabled(false);
+                saveButton.setEnabled(false);
 
                 reset();
             }
@@ -396,27 +422,31 @@ public class EvolTrioUI extends Window implements Bindable {
             }
         });
 
+        pauseEvolutionButton.getButtonPressListeners().add(
+                new ButtonPressListener() {
+
+                    @Override
+                    public void buttonPressed(Button button) {
+                        evolutionTask.pause();
+                        activityIndicator.setActive(false);
+
+                        startEvolutionButton.setVisible(true);
+                        pauseEvolutionButton.setVisible(false);
+                    }
+                });
+
+        // TODO rename to resume
         startEvolutionButton.getButtonPressListeners().add(
                 new ButtonPressListener() {
 
                     @Override
                     public void buttonPressed(Button button) {
+                        evolutionTask.start();
+                        activityIndicator.setActive(true);
+                        evolutionTask.execute(taskAdapter);
 
-                        if (evolutionTask.getState() == EvolutionTask.RUNNING) {
-                            evolutionTask.pause();
-                            activityIndicator.setActive(false);
-
-                            saveButton.setEnabled(true);
-                            playButton.setEnabled(true);
-
-                        } else if (evolutionTask.getState() == EvolutionTask.PAUSED) {
-                            evolutionTask.start();
-                            activityIndicator.setActive(true);
-                            evolutionTask.execute(taskAdapter);
-
-                            saveButton.setEnabled(false);
-                            playButton.setEnabled(false);
-                        }
+                        startEvolutionButton.setVisible(false);
+                        pauseEvolutionButton.setVisible(true);
                     }
                 });
 
@@ -424,7 +454,29 @@ public class EvolTrioUI extends Window implements Bindable {
 
             @Override
             public void buttonPressed(Button button) {
-                activityIndicator.setEnabled(false);
+
+                PlayMusicTask playTask = new PlayMusicTask(playButton,
+                        (MusicChromosome) evolutionTask.getEvolution()
+                                .getPopulation().getFittestChromosome());
+                playTask.execute(new TaskListener<String>() {
+                    @Override
+                    public void taskExecuted(Task<String> task) {
+                        // activityIndicator.setActive(false);
+                        setEnabled(true);
+
+                        System.out
+                                .println("Synchronous task execution complete: \""
+                                        + task.getResult() + "\"");
+                    }
+
+                    @Override
+                    public void executeFailed(Task<String> task) {
+                        // activityIndicator.setActive(false);
+                        setEnabled(true);
+
+                        // System.err.println(task.getFault());
+                    }
+                });
             }
         });
 
@@ -485,8 +537,11 @@ public class EvolTrioUI extends Window implements Bindable {
         evolutionTask.execute(taskAdapter);
 
         evolveButton.setVisible(false);
-        startEvolutionButton.setVisible(true);
+        pauseEvolutionButton.setVisible(true);
         resetButton.setEnabled(true);
+        playButton.setEnabled(true);
+        saveButton.setEnabled(true);
+        disableComponents();
 
     }
 
@@ -542,10 +597,6 @@ public class EvolTrioUI extends Window implements Bindable {
     }
 
     // Updater functions for the slider listeners
-    private void updateRestOffset() {
-        restOffsetLabel.setText(Integer.toString(restOffsetSlider.getValue()));
-    }
-
     private void updatePhraseNotes() {
         phraseNotesLabel.setText("" + phraseNotesSlider.getValue());
     }
@@ -558,17 +609,35 @@ public class EvolTrioUI extends Window implements Bindable {
         durJumpLabel.setText("" + durJumpSlider.getValue());
     }
 
+    private void updateTempo() {
+        MusicConfiguration.getInstance().setTempo(
+                tempoListButton.getSelectedItem().toString());
+    }
+
     private void updateOrgan() {
-        MusicConfiguration.getInstance().setSoloOrgan(
-                organListButton.getSelectedItemKey());
+        MusicConfiguration.getInstance().setSoloOrgan((instrumentSetListButton.getSelectedIndex()*8) +
+                organListButton.getSelectedIndex());
+    }
+    
+    private void updateInstrumentSet() {
+        int selectedSet = instrumentSetListButton.getSelectedIndex();
+        int firstInstrument = selectedSet * 8;
+        int lastInstrument = (selectedSet+1) * 8;
+        // remove all previous data
+        organListButton.getListData().clear();
+        
+        for(int i = firstInstrument; i<lastInstrument; i++)
+            ((List<Object>) organListButton.getListData()).add(MusicConfiguration.INSTRUMENT_NAMES.get(i));
+        organListButton.setSelectedIndex(0);
     }
 
     private void updateOctave() {
         octaveLabel.setText(Integer.toString(octaveSlider.getValue()));
     }
-    
+
     private void updateSelectFromPrevGen() {
-        selectFromPrevGenLabel.setText("" + selectFromPrevGenSlider.getValue() + "%");
+        selectFromPrevGenLabel.setText("" + selectFromPrevGenSlider.getValue()
+                + "%");
     }
 
     private void updateCrossover() {
@@ -583,6 +652,7 @@ public class EvolTrioUI extends Window implements Bindable {
         popSizeLabel.setText("" + popSizeSlider.getValue());
     }
 
+    // disable all active components
     public void disableComponents() {
         for (Component comp : activeComponents) {
             comp.setEnabled(false);
@@ -607,9 +677,6 @@ public class EvolTrioUI extends Window implements Bindable {
     }
 
     private void setupOptions() {
-
-        MusicConfiguration.getInstance().setRestOffset(
-                restOffsetSlider.getValue());
         MusicConfiguration.getInstance().setPhraseNotes(
                 phraseNotesSlider.getValue());
         MusicConfiguration.getInstance().setMaxIntervalJump(
@@ -618,17 +685,20 @@ public class EvolTrioUI extends Window implements Bindable {
                 durJumpSlider.getValue());
         MusicConfiguration.getInstance().setOctave(octaveSlider.getValue());
 
-        MusicConfiguration.getInstance().setSoloOrgan(
-                organListButton.getSelectedItem().toString());
-        
-        MusicConfiguration.getInstance().setBeginningDuration(begDurListButton.getSelectedIndex());
-        
-        MusicConfiguration.getInstance().setRootNote(keyNoteListButton.getSelectedItem().toString());
-        
-        MusicConfiguration.getInstance().setTempo(tempoListButton.getSelectedItem().toString());
+        MusicConfiguration.getInstance().setStaticBeginningDuration(
+                begDurListButton.getSelectedIndex());
 
-        evolutionTask.getEvolution().getEvolConf()
-        .setSelectFromPrevGen((double) selectFromPrevGenSlider.getValue() / 100d);
+        MusicConfiguration.getInstance().setRootNote(
+                keyNoteListButton.getSelectedItem().toString());
+
+        MusicConfiguration.getInstance().setTempo(
+                tempoListButton.getSelectedItem().toString());
+
+        evolutionTask
+                .getEvolution()
+                .getEvolConf()
+                .setSelectFromPrevGen(
+                        (double) selectFromPrevGenSlider.getValue() / 100d);
         evolutionTask.getEvolution().getEvolConf()
                 .setCrossoverRate((double) crossoverSlider.getValue() / 100d);
         evolutionTask.getEvolution().getEvolConf()

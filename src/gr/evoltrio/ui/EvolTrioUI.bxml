@@ -33,13 +33,6 @@
 									styles="{padding:4, spacing:10, fill:true}">
 
 									<BoxPane orientation="horizontal" styles="{fill:'true'}">
-										<Label text="Rest Offset" preferredWidth="100" />
-										<Slider bxml:id="restOffsetSlider" preferredWidth="200"
-											range="{start:0, end:12}" value="0" />
-										<Label bxml:id="restOffsetLabel" text="0" width="10" />
-									</BoxPane>
-
-									<BoxPane orientation="horizontal" styles="{fill:'true'}">
 										<Label text="Phrase Notes" preferredWidth="100" />
 										<Slider bxml:id="phraseNotesSlider" preferredWidth="200"
 											range="{start:4, end:32}" value="8" />
@@ -53,22 +46,22 @@
 										<Label bxml:id="intJumpLabel" text="5" width="10" />
 									</BoxPane>
 
+                  <BoxPane orientation="horizontal" styles="{fill:'true'}">
+                    <Label text="Duration Jump" preferredWidth="100" />
+                    <Slider bxml:id="durJumpSlider" preferredWidth="200"
+                      range="{start:1, end:6}" value="1" />
+                    <Label bxml:id="durJumpLabel" text="1" width="10" />
+                  </BoxPane>
+                  
 									<BoxPane orientation="horizontal" styles="{fill:'true'}">
 										<Label text="Octave" preferredWidth="100" />
 										<Slider bxml:id="octaveSlider" preferredWidth="200"
-											range="{start:1, end:11}" value="5" />
+											range="{start:2, end:11}" value="5" />
 										<Label bxml:id="octaveLabel" text="5" width="10" />
 									</BoxPane>
 
 									<BoxPane orientation="horizontal" styles="{fill:'true'}">
-										<Label text="Duration Jump" preferredWidth="100" />
-										<Slider bxml:id="durJumpSlider" preferredWidth="200"
-											range="{start:1, end:6}" value="1" />
-										<Label bxml:id="durJumpLabel" text="1" width="10" />
-									</BoxPane>
-
-									<BoxPane orientation="horizontal" styles="{fill:'true'}">
-										<Label text="Beg Dur" preferredWidth="100" />
+										<Label text="Starting Dur." preferredWidth="100" />
 										<ListButton bxml:id="begDurListButton"
 											preferredWidth="150" listData="[]" />
 									</BoxPane>
@@ -79,29 +72,43 @@
 											preferredWidth="150" listData="[]" />
 									</BoxPane>
 
-									<BoxPane orientation="horizontal" styles="{fill:'true'}">
-										<Label text="Tempo" preferredWidth="100" />
-										<ListButton bxml:id="tempoListButton"
-											preferredWidth="150" listData="[]" />
-									</BoxPane>
-
-									<BoxPane orientation="horizontal" styles="{fill:'true'}">
-										<Label text="Organ" preferredWidth="100" />
-										<ListButton bxml:id="organListButton"
-											preferredWidth="150" listData="[]" />
-									</BoxPane>
-
 								</BoxPane>
 							</Border>
+
+							<Border title="Midi" styles="{padding:2}">
+								<BoxPane orientation="vertical"
+									styles="{padding:4, spacing:10, fill:true}">
+									
+                  <BoxPane orientation="horizontal" styles="{fill:'true'}">
+                    <Label text="Tempo" preferredWidth="100" />
+                    <ListButton bxml:id="tempoListButton"
+                      preferredWidth="150" listData="[]" />
+                  </BoxPane>
+                  
+                  <BoxPane orientation="horizontal" styles="{fill:'true'}">
+                    <Label text="Instr. Set" preferredWidth="100" />
+                    <ListButton bxml:id="instrumentSetListButton"
+                      preferredWidth="150" listData="[]" />
+                  </BoxPane>
+
+                  <BoxPane orientation="horizontal" styles="{fill:'true'}">
+                    <Label text="Instrument" preferredWidth="100" />
+                    <ListButton bxml:id="organListButton"
+                      preferredWidth="150" listData="[]" />
+                  </BoxPane>
+                  
+								</BoxPane>
+							</Border>
+
 
 							<Border title="Evolutionary" styles="{padding:2}">
 								<BoxPane orientation="vertical"
 									styles="{padding:4, spacing:10, fill:true}">
 
 									<BoxPane orientation="horizontal" styles="{fill:'true'}">
-										<Label text="Sel From Prev Gen" preferredWidth="100" />
+										<Label text="From Prev. Gen." preferredWidth="100" />
 										<Slider bxml:id="selectFromPrevGenSlider"
-											preferredWidth="200" range="{start:0, end:100}" value="100" />
+											preferredWidth="200" range="{start:1, end:100}" value="100" />
 										<Label bxml:id="selectFromPrevGenLabel" text="100%"
 											width="10" />
 									</BoxPane>
@@ -121,7 +128,7 @@
 									</BoxPane>
 
 									<BoxPane orientation="horizontal" styles="{fill:'true'}">
-										<Label text="Pop Size" preferredWidth="100" />
+										<Label text="Population Size" preferredWidth="100" />
 										<Slider bxml:id="popSizeSlider" range="{start:4, end:1000}"
 											preferredWidth="200" value="100" />
 										<Label bxml:id="popSizeLabel" text="100" width="10" />
@@ -155,22 +162,52 @@
 							<BoxPane
 								styles="{horizontalAlignment:'center', verticalAlignment:'center'}">
 								<PushButton bxml:id="resetButton">
-									<content:ButtonData icon="@icons/media-skip-backward.svg" />
+									<dataRenderer>
+										<content:ButtonDataRenderer
+											orientation="vertical" />
+									</dataRenderer>
+									<content:ButtonData text="Reset"
+										icon="@icons/media-skip-backward.svg" />
 								</PushButton>
 								<PushButton bxml:id="evolveButton">
-									<content:ButtonData icon="@icons/system-run.svg" />
+									<dataRenderer>
+										<content:ButtonDataRenderer
+											orientation="vertical" />
+									</dataRenderer>
+									<content:ButtonData text="Evolve"
+										icon="@icons/system-run.svg" />
 								</PushButton>
 								<PushButton bxml:id="startEvolutionButton">
-									<content:ButtonData icon="@icons/media-playback-start.svg" />
+									<dataRenderer>
+										<content:ButtonDataRenderer
+											orientation="vertical" />
+									</dataRenderer>
+									<content:ButtonData text="Resume"
+										icon="@icons/media-playback-start.svg" />
 								</PushButton>
 								<PushButton bxml:id="pauseEvolutionButton">
-                  <content:ButtonData icon="@icons/media-playback-pause.svg" />
-                </PushButton>
+									<dataRenderer>
+										<content:ButtonDataRenderer
+											orientation="vertical" />
+									</dataRenderer>
+									<content:ButtonData text="Pause"
+										icon="@icons/media-playback-pause.svg" />
+								</PushButton>
 								<PushButton bxml:id="playButton">
-									<content:ButtonData icon="@icons/rhythmbox.svg" />
+									<dataRenderer>
+										<content:ButtonDataRenderer
+											orientation="vertical" />
+									</dataRenderer>
+									<content:ButtonData text="Play"
+										icon="@icons/rhythmbox.svg" />
 								</PushButton>
 								<PushButton bxml:id="saveButton">
-									<content:ButtonData icon="@icons/document-save.svg" />
+									<dataRenderer>
+										<content:ButtonDataRenderer
+											orientation="vertical" />
+									</dataRenderer>
+									<content:ButtonData text="Save"
+										icon="@icons/document-save.svg" />
 								</PushButton>
 							</BoxPane>
 							<BoxPane>

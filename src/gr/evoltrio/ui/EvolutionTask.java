@@ -9,10 +9,8 @@ import org.apache.pivot.charts.content.ValueSeries;
 import org.apache.pivot.collections.ArrayList;
 import org.apache.pivot.collections.List;
 import org.apache.pivot.collections.ListListener;
-import org.apache.pivot.collections.ListListener.Adapter;
 import org.apache.pivot.util.concurrent.Task;
 import org.apache.pivot.util.concurrent.TaskExecutionException;
-import org.jfugue.extras.GetPatternForVoiceTool;
 
 public class EvolutionTask extends Task<String> {
 
@@ -70,7 +68,7 @@ public class EvolutionTask extends Task<String> {
 
         System.out.println(evolution.getEvolConf());
         System.out.println(MusicConfiguration.getInstance());
-        System.out.println(evolution.getSoloFitness());
+        //System.out.println(evolution.getSoloFitness());
     }
 
     @Override
