@@ -1,3 +1,11 @@
+<!-- This file is part of EvolTrio. -->
+
+<!-- EvolTrio is licensed under the GPLv3. -->
+
+<!-- For licensing information please see the file license.txt included with EvolTrio -->
+<!-- or have a look at the top of class gr.evoltrio.core.Evolution which representatively -->
+<!-- includes the EvolTrio license policy applicable for any file delivered with EvolTrio. -->
+
 <evoltrioui:EvolTrioUI title="EvolTrio" maximized="true"
 	xmlns:evoltrioui="gr.evoltrio.ui" xmlns:bxml="http://pivot.apache.org/bxml"
 	xmlns:content="org.apache.pivot.wtk.content" xmlns:chartcontent="org.apache.pivot.charts.content"
@@ -167,7 +175,7 @@
 											orientation="vertical" />
 									</dataRenderer>
 									<content:ButtonData text="Reset"
-										icon="@icons/media-skip-backward.svg" />
+										icon="@icons/media-skip-backward.png" />
 								</PushButton>
 								<PushButton bxml:id="evolveButton">
 									<dataRenderer>
@@ -175,7 +183,7 @@
 											orientation="vertical" />
 									</dataRenderer>
 									<content:ButtonData text="Evolve"
-										icon="@icons/system-run.svg" />
+										icon="@icons/system-run.png" />
 								</PushButton>
 								<PushButton bxml:id="startEvolutionButton">
 									<dataRenderer>
@@ -183,7 +191,7 @@
 											orientation="vertical" />
 									</dataRenderer>
 									<content:ButtonData text="Resume"
-										icon="@icons/media-playback-start.svg" />
+										icon="@icons/media-playback-start.png" />
 								</PushButton>
 								<PushButton bxml:id="pauseEvolutionButton">
 									<dataRenderer>
@@ -191,7 +199,7 @@
 											orientation="vertical" />
 									</dataRenderer>
 									<content:ButtonData text="Pause"
-										icon="@icons/media-playback-pause.svg" />
+										icon="@icons/media-playback-pause.png" />
 								</PushButton>
 								<PushButton bxml:id="playButton">
 									<dataRenderer>
@@ -199,7 +207,7 @@
 											orientation="vertical" />
 									</dataRenderer>
 									<content:ButtonData text="Play"
-										icon="@icons/rhythmbox.svg" />
+										icon="@icons/rhythmbox.png" />
 								</PushButton>
 								<PushButton bxml:id="saveButton">
 									<dataRenderer>
@@ -207,7 +215,7 @@
 											orientation="vertical" />
 									</dataRenderer>
 									<content:ButtonData text="Save"
-										icon="@icons/document-save.svg" />
+										icon="@icons/document-save.png" />
 								</PushButton>
 							</BoxPane>
 							<BoxPane styles="{horizontalAlignment:'center', verticalAlignment:'center'}">

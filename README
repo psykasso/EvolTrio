@@ -1,0 +1,38 @@
+About
+-----
+
+EvolTrio is a program which composes music phrases using evolutionary
+algorithms. It's main purpose is to explore some possibilities of AI in
+the extremely experimental field of computer generated music.
+
+It's secondary objective is to have fun
+
+EvolTrio is licensed under GPLv3.
+
+Usage
+-----
+
+This program is packaged as a java applet and is available here:
+http://sites.it.teithe.gr/evomusic/evoltrio
+
+Documentation
+-------------
+
+If you don't understand anything of what you see, probably checking 
+documentation is a good idea:
+http://sites.it.teithe.gr/evomusic/documentation
+
+Building
+--------
+
+You can fetch the source from github:
+https://github.com/psykasso/EvolTrio
+
+and build it using apache ant.
+
+Contributing
+------------
+
+You can request features and issue bugs at github. For the very brave that
+want to commit patches and new featues, I guess they already now what and how
+to do it ;)

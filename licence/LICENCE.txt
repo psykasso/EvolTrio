@@ -1,0 +1,2 @@
+EvolTrio is distributed under the GPLv3 as described in licence GPLv3.txt
+

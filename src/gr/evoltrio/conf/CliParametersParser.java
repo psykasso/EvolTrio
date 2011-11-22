@@ -4,7 +4,7 @@
  * EvolTrio is licensed under the GPLv3.
  *
  * For licensing information please see the file license.txt included with EvolTrio
- * or have a look at the top of class gr.evoltrio.evomusic.Evolution which representatively
+ * or have a look at the top of class gr.evoltrio.core.Evolution which representatively
  * includes the EvolTrio license policy applicable for any file delivered with EvolTrio.
  */
 package gr.evoltrio.conf;
@@ -25,6 +25,7 @@ import org.apache.commons.cli.ParseException;
 /**
  * 
  * @author Konstantinos Georgiadis
+ * @since 0.0.1
  */
 public class CliParametersParser {
 

@@ -12,6 +12,5 @@
 	<classpathentry kind="lib" path="lib/pivot-jfree-2.0.jar"/>
 	<classpathentry kind="lib" path="lib/pivot-wtk-2.0.jar"/>
 	<classpathentry kind="lib" path="lib/pivot-wtk-terra-2.0.jar"/>
-	<classpathentry kind="lib" path="lib/svgSalamander-tiny.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -1,11 +1,25 @@
 /**
- * This file is part of EvolTrio.
+ * EvolTrio is a program which composes music phrases using evolutionary
+ * algorithms. It's main purpose is to explore some possibilities of AI in
+ * the extremely experimental field of computer generated music.
+ * 
+ * It's secondary objective is to have fun.
  *
- * EvolTrio is licensed under the GPLv3.
+ * Copyright (C) 2011  Konstantinos Georgiadis
+ * { kongeor@it.teithe.gr, psykasso@gmail.com }
  *
- * For licensing information please see the file license.txt included with EvolTrio
- * or have a look at the top of class gr.evoltrio.evomusic.Evolution which representatively
- * includes the EvolTrio license policy applicable for any file delivered with EvolTrio.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License Version 3
+ * along with this program.  If not, see http://www.gnu.org/licenses/gpl-3.0.txt
  */
 package gr.evoltrio.core;
 
@@ -48,26 +62,26 @@ public class Evolution {
 
     protected MusicChromosome[] phrases;
 
-//    public Evolution() {
-//        // file = new File(filename);
-//        String[] emptyStuff = { "", "" };
-//        parser = new CliParametersParser(emptyStuff);
-//        evolConf = parser.getEvolConfig();
-//        soloFitness = parser.getSoloFitness();
-//        parser.getMusicConfig();
-//        musicConf = MusicConfiguration.getInstance();
-//        setup();
-//    }
+    // public Evolution() {
+    // // file = new File(filename);
+    // String[] emptyStuff = { "", "" };
+    // parser = new CliParametersParser(emptyStuff);
+    // evolConf = parser.getEvolConfig();
+    // soloFitness = parser.getSoloFitness();
+    // parser.getMusicConfig();
+    // musicConf = MusicConfiguration.getInstance();
+    // setup();
+    // }
 
     public Evolution(String args[]) {
         parser = new CliParametersParser(args);
-//        Configuration.reset();
+        // Configuration.reset();
         evolConf = parser.getEvolConfig();
         soloFitness = parser.getSoloFitness();
         parser.getMusicConfig();
         musicConf = MusicConfiguration.getInstance();
     }
-    
+
     public Evolution() {
         Configuration.reset();
         evolConf = new EvolConfiguration();
@@ -102,7 +116,7 @@ public class Evolution {
 
         // set the phrase count
         phrases = new MusicChromosome[musicConf.getChordProgression().length];
-        
+
         try {
             population = Genotype.randomInitialGenotype(evolConf);
         } catch (InvalidConfigurationException e) {
@@ -129,8 +143,6 @@ public class Evolution {
     public void setEvolConf(EvolConfiguration evolConf) {
         this.evolConf = evolConf;
     }
-
-    
 
     public FitnessFunction getSoloFitness() {
         return soloFitness;
@@ -167,7 +179,9 @@ public class Evolution {
             for (int j = 0; j <= iterations; j++) {
                 // System.out.println("Phrase: " + (i+1) + ", iteration: " + j);
 
-                progress = new StringBuffer("Fitness : " + population.getFittestChromosome().getFitnessValue() + "\tProgress: "
+                progress = new StringBuffer("Fitness : "
+                        + population.getFittestChromosome().getFitnessValue()
+                        + "\tProgress: "
                         + (int) (((double) (i * iterations + j)
                                 / (phrases.length * iterations) * 100)) + "% ");
                 progress.append("|");
@@ -193,31 +207,33 @@ public class Evolution {
         }
         System.out.println();
     }
-    
+
     public double evolveOnce() {
-        
+
         population.evolve();
         updateAbsolutePopulation(population);
         return population.getFittestChromosome().getFitnessValue();
     }
-    
+
     public MusicChromosome getFittestChromosome() {
         return (MusicChromosome) population.getFittestChromosome();
     }
-    
+
     public Genotype getPopulation() {
         return population;
     }
 
     /**
      * Synchronizes the absolute chromosome values for a given population.
-     * @param pop The population to update
+     * 
+     * @param pop
+     *            The population to update
      */
     private void updateAbsolutePopulation(Genotype pop) {
-        for (IChromosome mc : pop.getPopulation().getChromosomes()){
+        for (IChromosome mc : pop.getPopulation().getChromosomes()) {
             ((MusicChromosome) mc).updateAbsolute();
         }
-            
+
     }
 
     public void buildAndPlay() {
@@ -250,11 +266,11 @@ public class Evolution {
 
     public static void main(String args[]) throws Exception {
 
-//        for(String arg : args)
-//            System.out.println(arg);
-//        Evolution evo = new Evolution(args);
+        // for(String arg : args)
+        // System.out.println(arg);
+        // Evolution evo = new Evolution(args);
         // CmdLineParser parser = new CmdLineParser(evo);
-        
+
         // if(args.length == 0){
         // System.out.println("Usage: java -jar EvolTrio.jar [ OPTIONS ] FILE");
         // //System.out.println("\nParameters and Options:");
@@ -262,14 +278,15 @@ public class Evolution {
         // System.out.println("\nTo view all the available options, type : java -jar EvolTrio.jar --help");
         // return;
         // }
-        //System.out.println("Evolving ...");
-        //evo.setup();
-        //evo.evolve();
+        // System.out.println("Evolving ...");
+        // evo.setup();
+        // evo.evolve();
         // evo.buildAndPlay();
-        //evo.buildAndSave();
+        // evo.buildAndSave();
         // evo.writeParameters();
-        //ScriptApplication sa = new ScriptApplication();
-        DesktopApplicationContext.main(ScriptApplication.class, new String[]{"--src=/gr/evoltrio/ui/EvolTrioUI.bxml"});
-        
+        // ScriptApplication sa = new ScriptApplication();
+        DesktopApplicationContext.main(ScriptApplication.class,
+                new String[] { "--src=/gr/evoltrio/ui/EvolTrioUI.bxml" });
+
     }
 }

@@ -4,11 +4,10 @@
  * EvolTrio is licensed under the GPLv3.
  *
  * For licensing information please see the file license.txt included with EvolTrio
- * or have a look at the top of class gr.evoltrio.evomusic.Evolution which representatively
+ * or have a look at the top of class gr.evoltrio.core.Evolution which representatively
  * includes the EvolTrio license policy applicable for any file delivered with EvolTrio.
  */
 package gr.evoltrio.fitness.impl;
-
 
 import gr.evoltrio.core.MusicChromosome;
 import gr.evoltrio.exception.InvalidEvaluationException;
